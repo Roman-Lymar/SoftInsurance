@@ -16,11 +16,17 @@ target/
 ### IntelliJ IDEA ###
 .idea
 *.iws
-
+*.iml
 *.ipr
 
+.project
+.classpath
+/.settings/
 /target/
-
+mvnw
+mvnw.cmd
+/.idea/
+.mvn/wrapper/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
