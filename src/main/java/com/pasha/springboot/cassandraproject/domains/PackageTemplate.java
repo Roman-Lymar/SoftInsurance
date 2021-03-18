@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Package implements Serializable, Comparable<Package> {
+public abstract class PackageTemplate implements Serializable, Comparable<PackageTemplate> {
 
     @PrimaryKey
     @Column("id")
@@ -33,7 +33,7 @@ public class Package implements Serializable, Comparable<Package> {
     @Column("productIds")
     private Collection<UUID> productIds = Collections.EMPTY_SET;
 
-    public Package() {
+    public PackageTemplate() {
         id = UUID.randomUUID();
     }
 
@@ -89,13 +89,13 @@ public class Package implements Serializable, Comparable<Package> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Package aPackage = (Package) o;
-        return this.id.equals(aPackage.id) &&
-                this.name.equals(aPackage.name) &&
-                this.description.equals(aPackage.description) &&
-                this.price.equals(aPackage.price) &&
-                this.createdTime.equals(aPackage.createdTime) &&
-                this.productIds.equals(aPackage.productIds);
+        PackageTemplate aPackageTemplate = (PackageTemplate) o;
+        return this.id.equals(aPackageTemplate.id) &&
+                this.name.equals(aPackageTemplate.name) &&
+                this.description.equals(aPackageTemplate.description) &&
+                this.price.equals(aPackageTemplate.price) &&
+                this.createdTime.equals(aPackageTemplate.createdTime) &&
+                this.productIds.equals(aPackageTemplate.productIds);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class Package implements Serializable, Comparable<Package> {
     }
 
     @Override
-    public int compareTo(Package o) {
+    public int compareTo(PackageTemplate o) {
         if(this.getName() == null) {
             this.setName(StringUtils.EMPTY);
         }
