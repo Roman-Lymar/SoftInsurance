@@ -1,7 +1,9 @@
 package com.pasha.springboot.cassandraproject.domains;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.cassandra.core.mapping.*;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

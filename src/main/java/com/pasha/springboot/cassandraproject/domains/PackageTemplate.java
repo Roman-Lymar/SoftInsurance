@@ -7,9 +7,9 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class PackageTemplate implements Serializable, Comparable<PackageTemplate> {
@@ -31,7 +31,7 @@ public abstract class PackageTemplate implements Serializable, Comparable<Packag
     private LocalDateTime createdTime = LocalDateTime.now();
 
     @Column("productIds")
-    private Collection<UUID> productIds = Collections.EMPTY_SET;
+    private Set<UUID> productIds = new HashSet<>();
 
     public PackageTemplate() {
         id = UUID.randomUUID();
@@ -77,11 +77,11 @@ public abstract class PackageTemplate implements Serializable, Comparable<Packag
         this.createdTime = createdTime;
     }
 
-    public Collection<UUID> getProductIds() {
+    public Set<UUID> getProductIds() {
         return productIds;
     }
 
-    public void setProductIds(Collection<UUID> productIds) {
+    public void setProductIds(Set<UUID> productIds) {
         this.productIds = productIds;
     }
 
