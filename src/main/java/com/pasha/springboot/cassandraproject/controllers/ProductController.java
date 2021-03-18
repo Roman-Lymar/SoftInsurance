@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v0/catalog/products")
@@ -49,9 +52,9 @@ public class ProductController {
 
     @GetMapping(path="/cost")
     public ResponseEntity<BigDecimal> getProductsCostFilterByIds(
-            @RequestParam(name = "filter") final List<UUID> ids) {
+            @RequestParam(name = "filter") UUID ids) {
         try {
-            BigDecimal cost = productService.getProductsCostByIds(ids);
+            BigDecimal cost = productService.getProductsCostByIds(Set.of(ids));
             return ResponseEntity.ok(cost);
         } catch (ResourceNotFoundException e) {
             //logger.error(e.getMessage());
@@ -104,7 +107,7 @@ public class ProductController {
                                                      @PathVariable("id") final UUID id) {
         try {
             Optional<Product> productOptional = productService.getProductById(id);
-            if (!productOptional.isPresent()) {
+            if (productOptional.isEmpty()) {
                 throw new ResourceNotFoundException();
             }
 

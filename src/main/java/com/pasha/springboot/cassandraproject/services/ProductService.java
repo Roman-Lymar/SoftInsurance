@@ -5,6 +5,7 @@ import com.pasha.springboot.cassandraproject.domains.Product;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ProductService {
@@ -12,6 +13,6 @@ public interface ProductService {
     Optional<Product> getProductById(UUID id);
     List<Product> getProductsByNames(List<String> names);
     Product saveProduct(Product product);
-    BigDecimal getProductsCostByIds(List<UUID> ids);
+    BigDecimal getProductsCostByIds(Set<UUID> ids);
     void deleteProduct(UUID id);
 }

@@ -1,13 +1,14 @@
 package com.pasha.springboot.cassandraproject.services;
 
 import com.pasha.springboot.cassandraproject.domains.Product;
+import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.pasha.springboot.cassandraproject.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -57,13 +58,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public BigDecimal getProductsCostByIds(List<UUID> ids) {
+    public BigDecimal getProductsCostByIds(Set<UUID> ids) {
         BigDecimal cost = BigDecimal.ZERO;
-        if(ids == null) { return cost; }
+        if(CollectionUtils.isEmpty(ids)) { return cost; }
 
         for(UUID id : ids) {
-            Product product = (productRepository.findById(id)).get();
-            cost = cost.add(product.getPrice());
+            Optional<Product> product = (productRepository.findById(id));
+            Product productFromDb = product.orElseThrow(ResourceNotFoundException::new);
+            cost = cost.add(productFromDb.getPrice());
+
+          /*  if (product.isPresent()) {
+                cost = cost.add(product.get().getPrice());
+            }*/
         }
         return cost;
     }
