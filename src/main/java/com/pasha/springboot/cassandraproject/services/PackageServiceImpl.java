@@ -1,5 +1,6 @@
 package com.pasha.springboot.cassandraproject.services;
 
+import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
@@ -71,6 +72,11 @@ public class PackageServiceImpl {
         packageDto.setProductList(products);
         return packageDto;
     }
+
+    public Iterable<PackageBase> getAllBasePackages(){
+        return packageBaseRepository.findAll();
+    }
+
 
 }
 

@@ -1,5 +1,6 @@
 package com.pasha.springboot.cassandraproject.controllers;
 
+import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
@@ -46,6 +47,13 @@ public class PackageController {
         else {
             return ResponseEntity.ok(packageService.getAllCustomPackagesByName(name));
         }
+    }
+
+    @GetMapping(value = "/base", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Iterable<PackageBase>> getAllProductsOrFilterByNames() {
+
+            return ResponseEntity.ok(packageService.getAllBasePackages());
+
     }
 
     @GetMapping(path="/{id}/info", produces = MediaType.APPLICATION_JSON_VALUE)
