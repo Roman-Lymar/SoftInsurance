@@ -1,7 +1,10 @@
 package com.pasha.springboot.cassandraproject.dto;
 
+import com.pasha.springboot.cassandraproject.domains.Product;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -14,11 +17,11 @@ public class PackageDto {
 
     private String description;
 
-    private BigDecimal price = BigDecimal.ZERO;
+    private BigDecimal price;
 
-    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime createdTime;
 
-    private Set<UUID> productIds = new HashSet<>();
+    private Collection<Product> productList;
 
     public UUID getId() {
         return id;
@@ -60,11 +63,11 @@ public class PackageDto {
         this.createdTime = createdTime;
     }
 
-    public Set<UUID> getProductIds() {
-        return productIds;
+    public Collection<Product> getProductList(){
+        return productList;
     }
 
-    public void setProductIds(Set<UUID> productIds) {
-        this.productIds = productIds;
+    public void setProductList(Collection<Product> productList) {
+        this.productList = productList;
     }
 }
