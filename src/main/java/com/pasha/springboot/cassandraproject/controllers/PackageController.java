@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +34,17 @@ public class PackageController {
             return ResponseEntity.ok(getPackage.get());
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Iterable<PackageCustom>> getAllProductsOrFilterByNames(
+            @RequestParam(name = "filter", required = false) final String name) {
+        if(name == null) {
+            return ResponseEntity.ok(packageService.getAllCustomPackages());
+        }
+        else {
+            return ResponseEntity.ok(packageService.getAllCustomPackagesByName(name));
         }
     }
 

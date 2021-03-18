@@ -33,6 +33,23 @@ public class PackageServiceImpl {
         return packageCustomRepository.insert(packageCustom);
     }
 
+    public Iterable<PackageCustom> getAllCustomPackages(){
+        return packageCustomRepository.findAll();
+    }
+
+    public List<PackageCustom> getAllCustomPackagesByName(String name){
+        List<PackageCustom> packageCustoms = packageCustomRepository.findAll();
+        List<PackageCustom> resultList = new ArrayList<>();
+
+        for(PackageCustom p: packageCustoms){
+            if(p.getName().contains(name) || p.getDescription().contains(name)){
+                resultList.add(p);
+            }
+        }
+
+        return resultList;
+    }
+
     public Optional<PackageCustom> getPackageCustomById(UUID id){
         return packageCustomRepository.findById(id);
     }
