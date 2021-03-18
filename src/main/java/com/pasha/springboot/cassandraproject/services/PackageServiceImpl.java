@@ -24,7 +24,7 @@ public class PackageServiceImpl {
 
     public PackageCustom createPackageCustom(PackageCustom packageCustom) {
         UUID uuid = UUID.randomUUID();
-        if (Objects.isNull(packageCustom.getId())){
+        if (Objects.isNull(packageCustom.getId())) {
             packageCustom.setId(uuid);
         }
 
@@ -33,16 +33,16 @@ public class PackageServiceImpl {
         return packageCustomRepository.insert(packageCustom);
     }
 
-    public Iterable<PackageCustom> getAllCustomPackages(){
+    public Iterable<PackageCustom> getAllCustomPackages() {
         return packageCustomRepository.findAll();
     }
 
-    public List<PackageCustom> getAllCustomPackagesByName(String name){
+    public List<PackageCustom> getAllCustomPackagesByName(String name) {
         List<PackageCustom> packageCustoms = packageCustomRepository.findAll();
         List<PackageCustom> resultList = new ArrayList<>();
 
-        for(PackageCustom p: packageCustoms){
-            if(p.getName().contains(name) || p.getDescription().contains(name)){
+        for (PackageCustom p : packageCustoms) {
+            if (p.getName().contains(name) || p.getDescription().contains(name)) {
                 resultList.add(p);
             }
         }
@@ -50,15 +50,15 @@ public class PackageServiceImpl {
         return resultList;
     }
 
-    public Optional<PackageCustom> getPackageCustomById(UUID id){
+    public Optional<PackageCustom> getPackageCustomById(UUID id) {
         return packageCustomRepository.findById(id);
     }
 
-    public PackageDto getInfoPackageById(UUID id){
+    public PackageDto getInfoPackageById(UUID id) {
         PackageCustom packageCustom = packageCustomRepository.findById(id).get();
 
         Collection<Product> products = new ArrayList<>();
-        for(UUID uuid: packageCustom.getProductIds()){
+        for (UUID uuid : packageCustom.getProductIds()) {
             products.add(productService.getProductById(uuid).get());
         }
 
@@ -66,10 +66,15 @@ public class PackageServiceImpl {
         packageDto.setId(packageCustom.getId());
         packageDto.setName(packageCustom.getName());
         packageDto.setDescription(packageCustom.getDescription());
-        packageDto.setPrice(packageCustom.getPrice());;
+        packageDto.setPrice(packageCustom.getPrice());
+        ;
         packageDto.setCreatedTime(packageCustom.getCreatedTime());
         packageDto.setProductList(products);
         return packageDto;
+    }
+
+    public void deletePackage(UUID id) {
+        packageCustomRepository.deleteById(id);
     }
 
 }
