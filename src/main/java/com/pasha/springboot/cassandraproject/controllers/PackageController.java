@@ -65,4 +65,16 @@ public class PackageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<Void> deletePackageById(@PathVariable("id") final UUID id) {
+        try {
+            packageService.deletePackage(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ResourceNotFoundException e) {
+            //logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }

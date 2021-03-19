@@ -13,5 +13,5 @@ public interface PackageService {
     List<PackageTemplate> getPackagesByNames(List<String> names);
     PackageTemplate saveProduct(PackageTemplate aPackageTemplate);
     BigDecimal getCost(List<UUID> ids);
-    void deleteProduct(UUID id);
+    void deletePackage(UUID id);
 }
