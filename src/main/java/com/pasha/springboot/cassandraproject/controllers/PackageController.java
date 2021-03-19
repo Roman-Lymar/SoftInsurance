@@ -28,6 +28,11 @@ public class PackageController {
         return new ResponseEntity<>(packageService.createPackageCustom(packageCustom), HttpStatus.CREATED);
     }
 
+    @PostMapping(value ="/base", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageBase> createNewPackageBase(@RequestBody PackageBase packageBase) {
+        return new ResponseEntity<>(packageService.createPackageBase(packageBase), HttpStatus.CREATED);
+    }
+
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageCustom> findPackageById(@PathVariable("id") final UUID id) {
         try {

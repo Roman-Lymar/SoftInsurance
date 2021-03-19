@@ -34,6 +34,17 @@ public class PackageServiceImpl {
         return packageCustomRepository.insert(packageCustom);
     }
 
+    public PackageBase createPackageBase(PackageBase packageBase) {
+        UUID uuid = UUID.randomUUID();
+        if (Objects.isNull(packageBase.getId())) {
+            packageBase.setId(uuid);
+        }
+
+        Set<UUID> productIds = packageBase.getProductIds();
+        packageBase.setPrice(productService.getProductsCostByIds(productIds));
+        return packageBaseRepository.insert(packageBase);
+    }
+
     public Iterable<PackageCustom> getAllCustomPackages() {
         return packageCustomRepository.findAll();
     }
