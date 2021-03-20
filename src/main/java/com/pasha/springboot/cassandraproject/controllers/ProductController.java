@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -25,16 +24,18 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<Product>> getAllProductsOrFilterByNames(
-            @RequestParam(name = "filter", required = false) final List<String> names) {
-        if(names == null) {
+    public ResponseEntity<Iterable<Product>> getAllProductsOrFilterByMatch(
+            @RequestParam(name = "filter", required = false) final String name) {
+        if(name == null) {
             return ResponseEntity.ok(productService.getAllProducts());
         }
         else {
-            return ResponseEntity.ok(productService.getProductsByNames(names));
+            return ResponseEntity.ok(productService.getProductsByName(name));
         }
     }
+
 
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> findProductById(@PathVariable("id") final UUID id) {

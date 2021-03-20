@@ -1,5 +1,6 @@
 package com.pasha.springboot.cassandraproject.services;
 
+import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.exceptions.ErrorMessages;
 import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
@@ -32,24 +33,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByNames(List<String> names) {
-        List<Product> findedProducts = new ArrayList<>();
-
-        List<Product> sortedProducts = new ArrayList<>();
-        for(Product p : getAllProducts()) {
-            sortedProducts.add(p);
-        }
-        Collections.sort(sortedProducts);
-
-        for(int i = 0; i < names.size(); i++) {
-            for(int j = 0; j < sortedProducts.size(); j++) {
-                if(names.get(i).equals(sortedProducts.get(j).getName())) {
-                    findedProducts.add(sortedProducts.get(j));
-                }
+    public List<Product> getProductsByName(String name) {
+        List<Product> finedProducts = new ArrayList<>();
+        for (Product p : productRepository.findAll()) {
+            if (p.getName().contains(name) || p.getDescription().contains(name)) {
+                finedProducts.add(p);
             }
         }
-        return findedProducts;
+        if (finedProducts.isEmpty()) {
+            throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_2.getErrorMessage()
+                    + name);
+        } else
+            return finedProducts;
     }
+
 
     @Override
     public Product saveProduct(Product product) {
@@ -60,9 +57,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public BigDecimal getProductsCostByIds(Set<UUID> ids) {
         BigDecimal cost = BigDecimal.ZERO;
-        if(CollectionUtils.isEmpty(ids)) { return cost; }
+        if (CollectionUtils.isEmpty(ids)) {
+            return cost;
+        }
 
-        for(UUID id : ids) {
+        for (UUID id : ids) {
             Product product = getProductById(id).get();
             cost = cost.add(product.getPrice());
         }
@@ -71,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(UUID id) {
-        if(getProductById(id).isPresent()) {
+        if (getProductById(id).isPresent()) {
             productRepository.deleteById(id);
         }
 
