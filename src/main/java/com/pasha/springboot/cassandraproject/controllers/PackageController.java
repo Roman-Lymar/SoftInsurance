@@ -2,7 +2,6 @@ package com.pasha.springboot.cassandraproject.controllers;
 
 import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
-import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
 import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.pasha.springboot.cassandraproject.services.PackageServiceImpl;
@@ -12,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
