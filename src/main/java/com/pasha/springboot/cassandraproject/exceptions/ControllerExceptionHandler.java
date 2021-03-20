@@ -21,7 +21,10 @@ import java.util.List;
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private final static Logger logger = LogManager.getLogger(ControllerExceptionHandler.class);
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+
+
+
+   @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
         logger.error(e.getMessage(), e);
 
@@ -31,11 +34,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
-                "Resource with provided id is not found!",
+                "Resource not found!",
                 details
         );
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
+
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {

@@ -11,7 +11,8 @@ import java.util.UUID;
 public interface ProductService {
     Iterable<Product> getAllProducts();
     Optional<Product> getProductById(UUID id);
-    List<Product> getProductsByNames(List<String> names);
+    List<Product> getProductsByName(String name); //for last version getAllProductsOrFilterByNames
+   // List<Product> getProductsByNames(List<String> names);
     Product saveProduct(Product product);
     BigDecimal getProductsCostByIds(Set<UUID> ids);
     void deleteProduct(UUID id);
