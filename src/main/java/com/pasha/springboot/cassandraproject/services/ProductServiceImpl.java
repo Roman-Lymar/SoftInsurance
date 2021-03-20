@@ -1,6 +1,7 @@
 package com.pasha.springboot.cassandraproject.services;
 
 import com.pasha.springboot.cassandraproject.domains.Product;
+import com.pasha.springboot.cassandraproject.exceptions.ErrorMessages;
 import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.pasha.springboot.cassandraproject.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> getProductById(UUID id) {
-        Optional<Product> fetchedProduct = productRepository.findById(id);
+        Optional<Product> fetchedProduct = Optional.ofNullable(productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
         return fetchedProduct;
     }
 
@@ -50,9 +53,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product saveProduct(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("Product can't be null");
-        }
         Product savedProduct = productRepository.save(product);
         return savedProduct;
     }
@@ -63,19 +63,17 @@ public class ProductServiceImpl implements ProductService {
         if(CollectionUtils.isEmpty(ids)) { return cost; }
 
         for(UUID id : ids) {
-            Optional<Product> product = (productRepository.findById(id));
-            Product productFromDb = product.orElseThrow(ResourceNotFoundException::new);
-            cost = cost.add(productFromDb.getPrice());
-
-          /*  if (product.isPresent()) {
-                cost = cost.add(product.get().getPrice());
-            }*/
+            Product product = getProductById(id).get();
+            cost = cost.add(product.getPrice());
         }
         return cost;
     }
 
     @Override
     public void deleteProduct(UUID id) {
-        productRepository.deleteById(id);
+        if(getProductById(id).isPresent()) {
+            productRepository.deleteById(id);
+        }
+
     }
 }
