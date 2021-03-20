@@ -1,5 +1,6 @@
 package com.pasha.springboot.cassandraproject.services;
 
+import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
@@ -31,6 +32,17 @@ public class PackageServiceImpl {
         Set<UUID> productIds = packageCustom.getProductIds();
         packageCustom.setPrice(productService.getProductsCostByIds(productIds));
         return packageCustomRepository.insert(packageCustom);
+    }
+
+    public PackageBase createPackageBase(PackageBase packageBase) {
+        UUID uuid = UUID.randomUUID();
+        if (Objects.isNull(packageBase.getId())) {
+            packageBase.setId(uuid);
+        }
+
+        Set<UUID> productIds = packageBase.getProductIds();
+        packageBase.setPrice(productService.getProductsCostByIds(productIds));
+        return packageBaseRepository.insert(packageBase);
     }
 
     public Iterable<PackageCustom> getAllCustomPackages() {
@@ -76,6 +88,11 @@ public class PackageServiceImpl {
     public void deletePackage(UUID id) {
         packageCustomRepository.deleteById(id);
     }
+
+    public Iterable<PackageBase> getAllBasePackages(){
+        return packageBaseRepository.findAll();
+    }
+
 
 }
 

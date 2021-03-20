@@ -1,5 +1,6 @@
 package com.pasha.springboot.cassandraproject.controllers;
 
+import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
@@ -27,6 +28,11 @@ public class PackageController {
         return new ResponseEntity<>(packageService.createPackageCustom(packageCustom), HttpStatus.CREATED);
     }
 
+    @PostMapping(value ="/base", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageBase> createNewPackageBase(@RequestBody PackageBase packageBase) {
+        return new ResponseEntity<>(packageService.createPackageBase(packageBase), HttpStatus.CREATED);
+    }
+
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageCustom> findPackageById(@PathVariable("id") final UUID id) {
         try {
@@ -46,6 +52,13 @@ public class PackageController {
         else {
             return ResponseEntity.ok(packageService.getAllCustomPackagesByName(name));
         }
+    }
+
+    @GetMapping(value = "/base", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Iterable<PackageBase>> getAllProductsOrFilterByNames() {
+
+            return ResponseEntity.ok(packageService.getAllBasePackages());
+
     }
 
     @GetMapping(path="/{id}/info", produces = MediaType.APPLICATION_JSON_VALUE)
