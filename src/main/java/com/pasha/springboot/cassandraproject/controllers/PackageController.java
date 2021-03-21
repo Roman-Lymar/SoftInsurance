@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,24 +23,26 @@ public class PackageController {
     @Autowired
     private PackageServiceImpl packageService;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageCustom> createNewPackageCustom(@RequestBody PackageCustom packageCustom) {
-        return new ResponseEntity<>(packageService.createPackageCustom(packageCustom), HttpStatus.CREATED);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageCustom> createNewPackageCustom(@RequestBody final  PackageCustom packageCustom)
+            throws URISyntaxException {
+        PackageCustom createdPack = packageService.createPackageCustom(packageCustom);
+        return ResponseEntity.created(new URI("/catalog/products/" + createdPack
+                .getId())).body(packageCustom);
     }
 
     @PostMapping(value ="/base", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageBase> createNewPackageBase(@RequestBody PackageBase packageBase) {
-        return new ResponseEntity<>(packageService.createPackageBase(packageBase), HttpStatus.CREATED);
+    public ResponseEntity<PackageBase> createNewPackageBase(@RequestBody final PackageBase packageBase)
+            throws URISyntaxException {
+        PackageBase createdPack = packageService.createPackageBase(packageBase);
+        return ResponseEntity.created(new URI("/catalog/packages/" + createdPack
+                .getId())).body(packageBase);
     }
 
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageCustom> findPackageById(@PathVariable("id") final UUID id) {
-        try {
-            Optional<PackageCustom> getPackage = packageService.getPackageCustomById(id);
-            return ResponseEntity.ok(getPackage.get());
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        Optional<PackageCustom> getPackage = packageService.getPackageCustomById(id);
+        return ResponseEntity.ok().body(getPackage.get());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,30 +58,25 @@ public class PackageController {
 
     @GetMapping(value = "/base", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<PackageBase>> getAllProductsOrFilterByNames() {
+        return ResponseEntity.ok(packageService.getAllBasePackages());
+    }
 
-            return ResponseEntity.ok(packageService.getAllBasePackages());
-
+    @GetMapping(path="/base/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageBase> findPackageBaseById(@PathVariable("id") final UUID id) {
+        Optional<PackageBase> getPackage = packageService.getPackageBaseById(id);
+        return ResponseEntity.ok().body(getPackage.get());
     }
 
     @GetMapping(path="/{id}/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable("id") final UUID id) {
-        try {
-            PackageDto getPackage = packageService.getInfoPackageById(id);
-            return ResponseEntity.ok(getPackage);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        PackageDto getPackage = packageService.getInfoPackageById(id);
+        return ResponseEntity.ok().body(getPackage);
     }
 
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deletePackageById(@PathVariable("id") final UUID id) {
-        try {
-            packageService.deletePackage(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (ResourceNotFoundException e) {
-            //logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        packageService.deletePackage(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
