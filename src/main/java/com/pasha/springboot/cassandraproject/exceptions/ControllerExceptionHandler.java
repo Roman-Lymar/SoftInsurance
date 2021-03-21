@@ -22,8 +22,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private final static Logger logger = LogManager.getLogger(ControllerExceptionHandler.class);
 
 
-
-
    @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
         logger.error(e.getMessage(), e);
@@ -35,6 +33,38 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
                 "Resource not found!",
+                details
+        );
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
+    @ExceptionHandler(EmptyPackageException.class)
+    protected ResponseEntity<Object> handleEmptyPackageException(EmptyPackageException e) {
+        logger.error(e.getMessage(), e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
+                "Empty products list",
+                details
+        );
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
+    @ExceptionHandler(UnableDeleteProductException.class)
+    protected ResponseEntity<Object> handleUnableDeleteProductException(UnableDeleteProductException e) {
+        logger.error(e.getMessage(), e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
+                "Product with provided id is used",
                 details
         );
         return ResponceEntityBuilder.build(apiExceptionModel);

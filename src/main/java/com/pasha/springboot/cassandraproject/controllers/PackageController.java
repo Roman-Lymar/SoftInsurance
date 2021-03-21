@@ -31,7 +31,6 @@ public class PackageController {
             Optional<PackageCustom> getPackage = packageService.getPackageCustomById(id);
             return ResponseEntity.ok(getPackage.get());
         } catch (ResourceNotFoundException e) {
-
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
