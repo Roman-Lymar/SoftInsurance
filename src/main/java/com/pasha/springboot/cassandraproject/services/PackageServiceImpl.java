@@ -4,6 +4,9 @@ import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.dto.PackageDto;
+import com.pasha.springboot.cassandraproject.exceptions.EmptyPackageException;
+import com.pasha.springboot.cassandraproject.exceptions.ErrorMessages;
+import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.pasha.springboot.cassandraproject.repositories.PackageBaseRepository;
 import com.pasha.springboot.cassandraproject.repositories.PackageCustomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class PackageServiceImpl {
         }
 
         Set<UUID> productIds = packageCustom.getProductIds();
+        if(productIds.isEmpty()){
+            throw new EmptyPackageException(ErrorMessages.EMPTY_PACKAGE.getErrorMessage());
+        }
         packageCustom.setPrice(productService.getProductsCostByIds(productIds));
         return packageCustomRepository.insert(packageCustom);
     }
@@ -58,16 +64,30 @@ public class PackageServiceImpl {
                 resultList.add(p);
             }
         }
+        if(resultList.isEmpty()){
+            throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_BY_NAME.getErrorMessage()
+                    +name);
+        }
 
         return resultList;
     }
 
     public Optional<PackageCustom> getPackageCustomById(UUID id) {
-        return packageCustomRepository.findById(id);
+        Optional<PackageCustom> fetchedPack = Optional.ofNullable(packageCustomRepository.findById(id).
+                orElseThrow(()-> new ResourceNotFoundException(
+                        ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
+        return fetchedPack;
+    }
+
+    public Optional<PackageBase> getPackageBaseById(UUID id) {
+        Optional<PackageBase> fetchedPack = Optional.ofNullable(packageBaseRepository.findById(id).
+                orElseThrow(()-> new ResourceNotFoundException(
+                        ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
+        return fetchedPack;
     }
 
     public PackageDto getInfoPackageById(UUID id) {
-        PackageCustom packageCustom = packageCustomRepository.findById(id).get();
+        PackageCustom packageCustom = getPackageCustomById(id).get();
 
         Collection<Product> products = new ArrayList<>();
         for (UUID uuid : packageCustom.getProductIds()) {
@@ -79,14 +99,15 @@ public class PackageServiceImpl {
         packageDto.setName(packageCustom.getName());
         packageDto.setDescription(packageCustom.getDescription());
         packageDto.setPrice(packageCustom.getPrice());
-        ;
         packageDto.setCreatedTime(packageCustom.getCreatedTime());
         packageDto.setProductList(products);
         return packageDto;
     }
 
     public void deletePackage(UUID id) {
-        packageCustomRepository.deleteById(id);
+        if(getPackageCustomById(id).isPresent()){
+            packageCustomRepository.deleteById(id);
+        }
     }
 
 
