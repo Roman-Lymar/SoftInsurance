@@ -24,7 +24,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Product>> getAllProductsOrFilterByMatch(
             @RequestParam(name = "filter", required = false) final String name) {
@@ -35,7 +34,6 @@ public class ProductController {
             return ResponseEntity.ok(productService.getProductsByName(name));
         }
     }
-
 
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> findProductById(@PathVariable("id") final UUID id) {

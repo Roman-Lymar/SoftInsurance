@@ -73,10 +73,15 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage);
     }
 
+    @GetMapping(path="/base/{id}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageDto> getInfoBasePackageById(@PathVariable("id") final UUID id) {
+        PackageDto getPackage = packageService.getInfoBasePackageById(id);
+        return ResponseEntity.ok().body(getPackage);
+    }
+
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deletePackageById(@PathVariable("id") final UUID id) {
         packageService.deletePackage(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,9 +20,11 @@ public abstract class PackageTemplate implements Serializable, Comparable<Packag
     private UUID id;
 
     @Column("name")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @Column("description")
+    @NotBlank(message = "Description cannot be empty")
     private String description;
 
     @Column("price")
