@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,7 +50,7 @@ public class ProductController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createNewProduct(@RequestBody final Product product)
+    public ResponseEntity<Product> createNewProduct(@Valid @RequestBody final Product product)
             throws URISyntaxException {
             Product createdProduct = productService.saveProduct(product);
             return ResponseEntity.created(new URI("/catalog/products/" + createdProduct
@@ -57,7 +58,7 @@ public class ProductController {
     }
 
     @PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> replaceProduct(@RequestBody final Product newProduct,
+    public ResponseEntity<Product> replaceProduct(@Valid @RequestBody final Product newProduct,
                                                  @PathVariable("id") final UUID id) {
             return productService.getProductById(id)
                     .map(product -> {
