@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
@@ -33,8 +35,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
                 "Resource not found!",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
@@ -49,8 +50,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
                 "Empty products list",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
@@ -65,11 +65,31 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
                 "Product with provided id is used",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
+        logger.error(e.getMessage(), e);
+
+        List<String> details = new ArrayList<>();
+        details = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getObjectName()+ " : " +error.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST,
+                "Validation Errors",
+                details);
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
@@ -82,8 +102,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
                 "Type Mismatch",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
@@ -101,8 +120,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
                 "Missing Parameters",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
@@ -120,8 +138,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
                 "Method Not Found",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 
@@ -136,8 +153,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Error occurred",
-                details
-        );
+                details);
         return ResponceEntityBuilder.build(apiExceptionModel);
     }
 }
