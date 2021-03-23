@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class PackageController {
     private PackageServiceImpl packageService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageCustom> createNewPackageCustom(@RequestBody final  PackageCustom packageCustom)
+    public ResponseEntity<PackageCustom> createNewPackageCustom(@Valid @RequestBody final PackageCustom packageCustom)
             throws URISyntaxException {
         PackageCustom createdPack = packageService.createPackageCustom(packageCustom);
         return ResponseEntity.created(new URI("/catalog/products/" + createdPack
@@ -32,7 +33,7 @@ public class PackageController {
     }
 
     @PostMapping(value ="/base", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageBase> createNewPackageBase(@RequestBody final PackageBase packageBase)
+    public ResponseEntity<PackageBase> createNewPackageBase(@Valid @RequestBody final PackageBase packageBase)
             throws URISyntaxException {
         PackageBase createdPack = packageService.createPackageBase(packageBase);
         return ResponseEntity.created(new URI("/catalog/packages/" + createdPack
@@ -73,10 +74,15 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage);
     }
 
+    @GetMapping(path="/base/{id}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PackageDto> getInfoBasePackageById(@PathVariable("id") final UUID id) {
+        PackageDto getPackage = packageService.getInfoBasePackageById(id);
+        return ResponseEntity.ok().body(getPackage);
+    }
+
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deletePackageById(@PathVariable("id") final UUID id) {
         packageService.deletePackage(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

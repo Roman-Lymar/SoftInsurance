@@ -5,6 +5,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -18,9 +19,11 @@ public class Product implements Serializable, Comparable<Product>{
     private UUID id;
 
     @Column("name")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @Column("description")
+    @NotBlank(message = "Description cannot be empty")
     private String description;
 
     @Column("price")
