@@ -20,8 +20,6 @@ import java.util.UUID;
 @RequestMapping("/api/v0/catalog/products")
 public class ProductController {
 
-    //private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private ProductService productService;
 
@@ -79,7 +77,7 @@ public class ProductController {
             Optional<Product> productOptional = productService.getProductById(id);
 
             Product product = productOptional.get();
-            if (productUpdate.getName() == null) {
+            if (productUpdate.getName() != null) {
                 product.setName(productUpdate.getName());
             }
             if (productUpdate.getDescription() != null) {
