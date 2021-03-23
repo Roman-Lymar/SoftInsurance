@@ -27,18 +27,18 @@ public class ProductServiceImpl implements ProductService {
     public Iterable<Product> getAllProducts() {
         logger.info("Method getAllProducts called");
         Iterable<Product> allProducts = productRepository.findAll();
-        logger.info("Results successfully returned");
+        logger.info("All products successfully returned");
         return allProducts;
     }
 
-
+/// ->logger.warn("")????
     @Override
     public Optional<Product> getProductById(UUID id) {
         logger.info("Method getProductById called");
         Optional<Product> fetchedProduct = Optional.ofNullable(productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
-        logger.info("Results successfully returned ");
+        logger.info("Products successfully returned for id: "+ id);
         return fetchedProduct;
     }
 
@@ -52,12 +52,11 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         if (finedProducts.isEmpty()) {
-            logger.warn("None results by filter: "+ name +
-                    ErrorMessages.NO_RESOURCE_FOUND_2.getErrorMessage());
-            throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_2.getErrorMessage()
+            logger.warn("None results by filter: "+ name + " NO_RESOURCE_FOUND_BY_NAME");
+            throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_BY_NAME.getErrorMessage()
                     + name);
         } else
-            logger.info("Results successfully returned with filter: " + name);
+            logger.info("Products successfully returned with filter: " + name);
             return finedProducts;
     }
 
@@ -75,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
         logger.info(" Method getProductsCostByIds called with ids: " + ids);
         BigDecimal cost = BigDecimal.ZERO;
         if (CollectionUtils.isEmpty(ids)) {
-            logger.info("None selected product");
+            logger.warn("None selected products");
             return cost;
         }
 
@@ -83,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = getProductById(id).get();
             cost = cost.add(product.getPrice());
         }
-        logger.info("Results successfully returned for " + ids);
+        logger.info("Products successfully returned for " + ids);
         return cost;
     }
 
