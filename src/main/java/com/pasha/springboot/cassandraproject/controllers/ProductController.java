@@ -19,8 +19,6 @@ import java.util.UUID;
 @RequestMapping("/api/v0/catalog/products")
 public class ProductController {
 
-    //private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private ProductService productService;
 
