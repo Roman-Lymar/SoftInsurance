@@ -75,6 +75,7 @@ public class ProductController {
         }
     }
 
+
     @PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> replaceProduct(@RequestBody final Product newProduct,
                                                  @PathVariable("id") final UUID id) {
