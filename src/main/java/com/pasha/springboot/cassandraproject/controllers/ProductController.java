@@ -80,7 +80,7 @@ public class ProductController {
             Optional<Product> productOptional = productService.getProductById(id);
 
             Product product = productOptional.get();
-            if (productUpdate.getName() == null) {
+            if (productUpdate.getName() != null) {
                 product.setName(productUpdate.getName());
             }
             if (productUpdate.getDescription() != null) {
