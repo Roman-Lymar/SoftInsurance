@@ -89,7 +89,7 @@ public class PackageServiceImpl {
     public PackageDto getInfoPackageById(UUID id) {
         PackageCustom packageCustom = getPackageCustomById(id).get();
 
-        Collection<Product> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         for (UUID uuid : packageCustom.getProductIds()) {
             products.add(productService.getProductById(uuid).get());
         }
@@ -104,17 +104,31 @@ public class PackageServiceImpl {
         return packageDto;
     }
 
+    public PackageDto getInfoBasePackageById(UUID id) {
+        PackageBase packageBase = getPackageBaseById(id).get();
+
+        List<Product> products = new ArrayList<>();
+        for (UUID uuid : packageBase.getProductIds()) {
+            products.add(productService.getProductById(uuid).get());
+        }
+
+        PackageDto packageDto = new PackageDto();
+        packageDto.setId(packageBase.getId());
+        packageDto.setName(packageBase.getName());
+        packageDto.setDescription(packageBase.getDescription());
+        packageDto.setPrice(packageBase.getPrice());
+        packageDto.setCreatedTime(packageBase.getCreatedTime());
+        packageDto.setProductList(products);
+        return packageDto;
+    }
+
     public void deletePackage(UUID id) {
         if(getPackageCustomById(id).isPresent()){
             packageCustomRepository.deleteById(id);
         }
     }
 
-
     public Iterable<PackageBase> getAllBasePackages(){
         return packageBaseRepository.findAll();
     }
-
 }
-
-

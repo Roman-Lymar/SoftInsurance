@@ -20,5 +20,4 @@ public enum ErrorMessages {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-
 }
