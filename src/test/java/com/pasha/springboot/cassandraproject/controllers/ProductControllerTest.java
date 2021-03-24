@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+
 class ProductControllerTest {
 
     private static final String URL_STRING = "/api/v0/catalog/products";
