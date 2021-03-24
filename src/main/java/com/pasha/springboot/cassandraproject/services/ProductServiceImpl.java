@@ -1,10 +1,14 @@
 package com.pasha.springboot.cassandraproject.services;
 
 import com.pasha.springboot.cassandraproject.controllers.ProductController;
+import com.pasha.springboot.cassandraproject.domains.PackageBase;
 import com.pasha.springboot.cassandraproject.domains.PackageCustom;
 import com.pasha.springboot.cassandraproject.domains.Product;
 import com.pasha.springboot.cassandraproject.exceptions.ErrorMessages;
 import com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException;
+import com.pasha.springboot.cassandraproject.exceptions.UnableDeleteProductException;
+import com.pasha.springboot.cassandraproject.repositories.PackageBaseRepository;
+import com.pasha.springboot.cassandraproject.repositories.PackageCustomRepository;
 import com.pasha.springboot.cassandraproject.repositories.ProductRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,10 +22,16 @@ import java.util.*;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class.getSimpleName());
+
     @Autowired
     private ProductRepository productRepository;
 
-    private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class.getSimpleName());
+    @Autowired
+    private PackageCustomRepository packageCustomRepository;
+
+    @Autowired
+    private PackageBaseRepository packageBaseRepository;
 
     @Override
     public Iterable<Product> getAllProducts() {
@@ -45,19 +55,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProductsByName(String name) {
         logger.info("Method getProductsByName called");
-        List<Product> finedProducts = new ArrayList<>();
+        List<Product> foundProducts = new ArrayList<>();
         for (Product p : productRepository.findAll()) {
             if (p.getName().contains(name) || p.getDescription().contains(name)) {
-                finedProducts.add(p);
+                foundProducts.add(p);
             }
         }
-        if (finedProducts.isEmpty()) {
+        if (foundProducts.isEmpty()) {
             logger.warn("None results by filter: "+ name + " NO_RESOURCE_FOUND_BY_NAME");
             throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_BY_NAME.getErrorMessage()
                     + name);
         } else
             logger.info("Products successfully returned with filter: " + name);
-            return finedProducts;
+            return foundProducts;
     }
 
 
@@ -90,9 +100,22 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(UUID id) {
         logger.info("Method deleteProduct called");
         if (getProductById(id).isPresent()) {
+            for(PackageBase packageBase: packageBaseRepository.findAll()){
+                for(UUID uuid: packageBase.getProductIds()){
+                    if(uuid.equals(id)){
+                        throw new UnableDeleteProductException(ErrorMessages.UNABLE_DELETE_PACKAGE.getErrorMessage());
+                    }
+                }
+            }
+            for(PackageCustom packageCustom: packageCustomRepository.findAll()){
+                for(UUID uuid: packageCustom.getProductIds()){
+                    if(uuid.equals(id)){
+                        throw new UnableDeleteProductException(ErrorMessages.UNABLE_DELETE_PACKAGE.getErrorMessage());
+                    }
+                }
+            }
             productRepository.deleteById(id);
             logger.info("Product " + id + " was successfully deleted");
         }
-
     }
 }

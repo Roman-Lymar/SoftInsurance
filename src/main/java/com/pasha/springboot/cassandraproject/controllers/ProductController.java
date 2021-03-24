@@ -62,7 +62,7 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
     public ResponseEntity<Product> createNewProduct(@Valid @RequestBody final Product product)
             throws URISyntaxException {
             Product createdProduct = productService.saveProduct(product);
-        logger.info("Request createNewProduct");
+            logger.info("Request createNewProduct");
             return ResponseEntity.created(new URI("/catalog/products/" + createdProduct
                     .getId())).body(product);
     }
