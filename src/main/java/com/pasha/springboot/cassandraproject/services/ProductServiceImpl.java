@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
         return allProducts;
     }
 
-/// ->logger.warn("")????
+
     @Override
     public Optional<Product> getProductById(UUID id) {
         logger.info("Method getProductById called");

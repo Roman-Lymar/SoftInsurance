@@ -60,7 +60,7 @@ public class PackageServiceImpl {
     }
 
     public Iterable<PackageCustom> getAllCustomPackages() {
-        logger.info("Method createPackageBase called");
+        logger.info("Method getAllCustomPackages called");
         logger.info("Custom Packages successfully returned");
         return packageCustomRepository.findAll();
     }
@@ -84,7 +84,6 @@ public class PackageServiceImpl {
         return resultList;
     }
 
-    /// ->logger.warn("")????
 
     public Optional<PackageCustom> getPackageCustomById(UUID id) {
         logger.info("Method getPackageCustomById called");
