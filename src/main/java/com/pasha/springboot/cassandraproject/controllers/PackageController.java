@@ -25,6 +25,8 @@ public class PackageController {
 
     private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
 
+    private static final String URI_PACKAGES = "/catalog/packages/";
+
     @Autowired
     private PackageServiceImpl packageService;
 
@@ -33,7 +35,7 @@ public class PackageController {
             throws URISyntaxException {
         logger.info("Request createNewPackageCustom");
         PackageCustom createdPack = packageService.createPackageCustom(packageCustom);
-        return ResponseEntity.created(new URI("/catalog/packages/" + createdPack
+        return ResponseEntity.created(new URI(URI_PACKAGES + createdPack
                 .getId())).body(packageCustom);
     }
 
@@ -42,7 +44,7 @@ public class PackageController {
             throws URISyntaxException {
         logger.info("Request createNewPackageBase");
         PackageBase createdPack = packageService.createPackageBase(packageBase);
-        return ResponseEntity.created(new URI("/catalog/packages/" + createdPack
+        return ResponseEntity.created(new URI(URI_PACKAGES + createdPack
                 .getId())).body(packageBase);
     }
 
