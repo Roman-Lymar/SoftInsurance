@@ -10,9 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +24,6 @@ public class ProductController {
 
 private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
 
-
     @Autowired
     private ProductService productService;
 
@@ -37,7 +34,6 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
 
         if(name == null) {
             logger.info("Request getAllProductsOrFilterByName");
-
             return ResponseEntity.ok(productService.getAllProducts());
         }
         else {
@@ -49,7 +45,7 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
 
     @GetMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> findProductById(@PathVariable("id") final UUID id) {
-        logger.info("Request Get product by id " + id);
+            logger.info("Request Get product by id " + id);
             Optional<Product> product = productService.getProductById(id);
             return ResponseEntity.ok().body(product.get());
     }
@@ -57,13 +53,13 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
     @GetMapping(path="/cost")
     public ResponseEntity<BigDecimal> getProductsCostFilterByIds(
             @RequestParam(name = "ids") Set<UUID> ids) {
-        logger.info("Request Get product by id with filter COST for " + ids);
+            logger.info("Request Get product by id with filter COST for " + ids);
             BigDecimal cost = productService.getProductsCostByIds(ids);
             return ResponseEntity.ok(cost);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createNewProduct(@RequestBody final Product product)
+    public ResponseEntity<Product> createNewProduct(@Valid @RequestBody final Product product)
             throws URISyntaxException {
             Product createdProduct = productService.saveProduct(product);
         logger.info("Request createNewProduct");
@@ -72,9 +68,9 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
     }
 
     @PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> replaceProduct(@RequestBody final Product newProduct,
+    public ResponseEntity<Product> replaceProduct(@Valid @RequestBody final Product newProduct,
                                                  @PathVariable("id") final UUID id) {
-        logger.info("Request replaceProduct for id: " + id);
+            logger.info("Request replaceProduct for id: " + id);
             return productService.getProductById(id)
                     .map(product -> {
                         product.setName(newProduct.getName());
@@ -91,11 +87,11 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
     @PatchMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> partialUpdateProduct(@RequestBody final Product productUpdate,
                                                      @PathVariable("id") final UUID id) {
-        logger.info("Request partialUpdateProduct for id: " + id);
+            logger.info("Request partialUpdateProduct for id: " + id);
             Optional<Product> productOptional = productService.getProductById(id);
 
             Product product = productOptional.get();
-            if (productUpdate.getName() == null) {
+            if (productUpdate.getName() != null) {
                 product.setName(productUpdate.getName());
                 logger.info("Updated Product Name" +" to: "+ product.getName()+ " for id: " + id);
 
@@ -115,7 +111,7 @@ private static final Logger logger = LogManager.getLogger(ProductController.clas
 
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deleteProductById(@PathVariable("id") final UUID id) {
-        logger.info("Request deleteProductById for id: " + id);
+            logger.info("Request deleteProductById for id: " + id);
             productService.deleteProduct(id);
             return ResponseEntity.status(HttpStatus.OK).build();
     }

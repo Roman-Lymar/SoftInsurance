@@ -48,7 +48,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 "Empty products list",
                 details);
         return ResponceEntityBuilder.build(apiExceptionModel);
@@ -63,7 +63,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 "Product with provided id is used",
                 details);
         return ResponceEntityBuilder.build(apiExceptionModel);
