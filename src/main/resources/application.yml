@@ -1,0 +1,26 @@
+spring.application.name: cassandra-project
+
+# Local run
+#server.port: 8081
+#management.server.port: 8082
+
+spring.data.cassandra:
+  keyspace-name: simple_keyspace
+  username: wwUhLTYJQNokeTnQLzeCrEjC
+  password: DxQLLkU_qrgSqzvwEaQ_SN12zSerFGeb32hJyo4PqMIlCrMgGEmzItY_pbgkpT5rSmhmO63_1J49Ufc4WkKm2uSYDL5gWrmtXJ+dgizNLIyYxxti6zj7WwS4lLldnQqY
+  # Create the schema on the fly if it doesn't exist
+  schema-action: CREATE_IF_NOT_EXISTS
+  # Increase timeouts when connecting to Astra from a dev workstation
+  request:
+    timeout: 10s
+  connection:
+    connect-timeout: 10s
+    init-query-timeout: 10s
+
+datastax.astra:
+  secure-connect-bundle: src/main/resources/secure-connect-softinsurance.zip
+
+spring.mvc:
+  throw-exception-if-no-handler-found: true
+spring.resources:
+  add-mappings: false

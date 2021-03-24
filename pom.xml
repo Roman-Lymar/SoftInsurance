@@ -16,12 +16,40 @@
 
 	<properties>
 		<java.version>8</java.version>
+		<springfox.version>3.0.0</springfox.version>
+		<cassandra-java-driver.version>4.8.0</cassandra-java-driver.version>
+		<cassandra-native-protocol.version>1.4.11</cassandra-native-protocol.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-cassandra</artifactId>
+		</dependency>
+
+		<!-- Cassandra driver -->
+		<dependency>
+			<groupId>com.datastax.oss</groupId>
+			<artifactId>java-driver-core</artifactId>
+			<version>${cassandra-java-driver.version}</version>
+			<!-- exclude Tinkerpop dependencies to remove groovy warning on Java 11 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.tinkerpop</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.datastax.oss</groupId>
+			<artifactId>native-protocol</artifactId>
+			<version>${cassandra-native-protocol.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 
 		<dependency>
@@ -87,18 +115,18 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Swagger Docs -->
 		<dependency>
-			<groupId>com.datastax.cassandra</groupId>
-			<artifactId>cassandra-driver-core</artifactId>
-			<version>3.8.0</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>io.dropwizard.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-			<version>4.1.17</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
 		</dependency>
-
 
 	</dependencies>
 
@@ -107,6 +135,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-configuration-processor</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
