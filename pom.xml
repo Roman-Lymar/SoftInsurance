@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>
@@ -88,10 +88,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.datastax.oss</groupId>
-			<artifactId>java-driver-core</artifactId>
-			<version>4.9.0</version>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+			<version>3.8.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>4.1.17</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -100,14 +107,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
