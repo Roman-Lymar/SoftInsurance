@@ -1,0 +1,59 @@
+[INFO ] 2021-03-24 12:01:58.049 [background-preinit] Version - HV000001: Hibernate Validator 6.1.7.Final
+[INFO ] 2021-03-24 12:02:09.633 [http-nio-3001-exec-2] ProductController - Request Get product by id 5603bd47-2482-4283-b4a4-d98628a4b91d
+[INFO ] 2021-03-24 12:02:09.634 [http-nio-3001-exec-2] ProductServiceImpl - Method getProductById called
+[INFO ] 2021-03-24 12:02:09.700 [http-nio-3001-exec-2] ProductServiceImpl - Products successfully returned for id: 5603bd47-2482-4283-b4a4-d98628a4b91d
+[INFO ] 2021-03-24 12:02:46.694 [http-nio-3001-exec-3] ProductController - Request Get product by id 5603bd47-2482-4283-b4a4-0d98628a4b91
+[INFO ] 2021-03-24 12:02:46.694 [http-nio-3001-exec-3] ProductServiceImpl - Method getProductById called
+[ERROR] 2021-03-24 12:02:46.703 [http-nio-3001-exec-3] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=5603bd47-2482-4283-b4a4-0d98628a4b91
+[INFO ] 2021-03-24 12:03:12.945 [background-preinit] Version - HV000001: Hibernate Validator 6.1.7.Final
+[INFO ] 2021-03-24 12:03:19.130 [main] ProductController - Request Get product by id with filter COST for [ccad1469-01ac-44f9-9b05-e01f32243cb9, ccad1469-01ac-44f9-9b05-e01f32243cb7]
+[INFO ] 2021-03-24 12:03:19.491 [main] ProductController - Request replaceProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[ERROR] 2021-03-24 12:03:19.495 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:03:19.525 [main] ProductController - Request Get product by id cb80c4d9-402e-4f92-b361-1252692df957
+[ERROR] 2021-03-24 12:03:19.526 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:03:19.540 [main] ProductController - Request createNewProduct
+[INFO ] 2021-03-24 12:03:19.564 [main] ProductController - Request replaceProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:03:19.586 [main] ProductController - Request getAllProductsOrFilterByName with filter: pro
+[ERROR] 2021-03-24 12:03:19.587 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: No results returned by the Query. No matches with: 
+[INFO ] 2021-03-24 12:03:19.597 [main] ProductController - Request getAllProductsOrFilterByName
+[INFO ] 2021-03-24 12:03:19.623 [main] ProductController - Request partialUpdateProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[ERROR] 2021-03-24 12:03:19.624 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:03:19.632 [main] ProductController - Request Get product by id ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:03:19.647 [main] ProductController - Request getAllProductsOrFilterByName with filter: pro
+[INFO ] 2021-03-24 12:03:19.660 [main] ProductController - Request deleteProductById for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:03:19.675 [main] ProductController - Request partialUpdateProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:03:19.692 [main] ProductController - Updated Product Name to: name for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:03:19.693 [main] ProductController - Updated Product Description to: description for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:49.179 [background-preinit] Version - HV000001: Hibernate Validator 6.1.7.Final
+[INFO ] 2021-03-24 12:10:54.366 [main] ProductController - Request Get product by id with filter COST for [ccad1469-01ac-44f9-9b05-e01f32243cb9, ccad1469-01ac-44f9-9b05-e01f32243cb7]
+[INFO ] 2021-03-24 12:10:54.676 [main] ProductController - Request replaceProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[ERROR] 2021-03-24 12:10:54.678 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:10:54.700 [main] ProductController - Request Get product by id 79a55ece-53ad-42fc-8c33-5b78b52856d8
+[ERROR] 2021-03-24 12:10:54.700 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:10:54.715 [main] ProductController - Request createNewProduct
+[INFO ] 2021-03-24 12:10:54.738 [main] ProductController - Request replaceProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:54.756 [main] ProductController - Request getAllProductsOrFilterByName with filter: pro
+[ERROR] 2021-03-24 12:10:54.757 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: No results returned by the Query. No matches with: 
+[INFO ] 2021-03-24 12:10:54.767 [main] ProductController - Request getAllProductsOrFilterByName
+[INFO ] 2021-03-24 12:10:54.785 [main] ProductController - Request partialUpdateProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[ERROR] 2021-03-24 12:10:54.786 [main] ControllerExceptionHandler - Resource not found! com.pasha.springboot.cassandraproject.exceptions.ResourceNotFoundException: Resource with provided id is not found: id=
+[INFO ] 2021-03-24 12:10:54.795 [main] ProductController - Request Get product by id ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:54.803 [main] ProductController - Request getAllProductsOrFilterByName with filter: pro
+[INFO ] 2021-03-24 12:10:54.816 [main] ProductController - Request deleteProductById for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:54.832 [main] ProductController - Request partialUpdateProduct for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:54.841 [main] ProductController - Updated Product Name to: name for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:10:54.842 [main] ProductController - Updated Product Description to: description for id: ccad1469-01ac-44f9-9b05-e01f32243cb9
+[INFO ] 2021-03-24 12:11:23.761 [background-preinit] Version - HV000001: Hibernate Validator 6.1.7.Final
+[INFO ] 2021-03-24 12:11:33.670 [http-nio-3001-exec-2] ProductController - Request getAllPackagesOrFilterByNames
+[INFO ] 2021-03-24 12:11:33.671 [http-nio-3001-exec-2] PackageServiceImpl - Method getAllCustomPackages called
+[INFO ] 2021-03-24 12:11:33.671 [http-nio-3001-exec-2] PackageServiceImpl - Custom Packages successfully returned
+[INFO ] 2021-03-24 12:12:12.177 [http-nio-3001-exec-3] ProductController - Request createNewPackageCustom
+[INFO ] 2021-03-24 12:12:12.177 [http-nio-3001-exec-3] PackageServiceImpl - Method createPackageCustom called
+[WARN ] 2021-03-24 12:12:12.178 [http-nio-3001-exec-3] PackageServiceImpl - Package cannot be created. EMPTY_PACKAGE 
+[INFO ] 2021-03-24 12:12:12.178 [http-nio-3001-exec-3] ProductServiceImpl -  Method getProductsCostByIds called with ids: [5662eb19-6c49-4b62-866c-a1dc201a695f, ccad1469-01ac-44f9-9b05-e01f32243cb8]
+[INFO ] 2021-03-24 12:12:12.178 [http-nio-3001-exec-3] ProductServiceImpl - Method getProductById called
+[INFO ] 2021-03-24 12:12:12.196 [http-nio-3001-exec-3] ProductServiceImpl - Products successfully returned for id: 5662eb19-6c49-4b62-866c-a1dc201a695f
+[INFO ] 2021-03-24 12:12:12.196 [http-nio-3001-exec-3] ProductServiceImpl - Method getProductById called
+[INFO ] 2021-03-24 12:12:12.201 [http-nio-3001-exec-3] ProductServiceImpl - Products successfully returned for id: ccad1469-01ac-44f9-9b05-e01f32243cb8
+[INFO ] 2021-03-24 12:12:12.201 [http-nio-3001-exec-3] ProductServiceImpl - Products successfully returned for [5662eb19-6c49-4b62-866c-a1dc201a695f, ccad1469-01ac-44f9-9b05-e01f32243cb8]
+[INFO ] 2021-03-24 12:12:12.202 [http-nio-3001-exec-3] PackageServiceImpl - Packagerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrcreated

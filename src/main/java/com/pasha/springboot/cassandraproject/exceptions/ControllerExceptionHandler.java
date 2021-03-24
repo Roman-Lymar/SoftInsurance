@@ -21,12 +21,13 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
-    private final static Logger logger = LogManager.getLogger(ControllerExceptionHandler.class);
+    private final static Logger logger = LogManager.getLogger(ControllerExceptionHandler.class.getSimpleName());
 
 
    @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+       logger.error("Resource not found! " + e);
 
         List<String> details = new ArrayList<>();
         details.add(e.getMessage());
@@ -41,14 +42,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EmptyPackageException.class)
     protected ResponseEntity<Object> handleEmptyPackageException(EmptyPackageException e) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+        logger.error(ErrorMessages.EMPTY_PACKAGE.getErrorMessage());
 
         List<String> details = new ArrayList<>();
         details.add(e.getMessage());
 
         ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 "Empty products list",
                 details);
         return ResponceEntityBuilder.build(apiExceptionModel);
@@ -56,14 +58,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UnableDeleteProductException.class)
     protected ResponseEntity<Object> handleUnableDeleteProductException(UnableDeleteProductException e) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+        logger.error(ErrorMessages.UNABLE_DELETE_PACKAGE.getErrorMessage());
 
         List<String> details = new ArrayList<>();
         details.add(e.getMessage());
 
         ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 "Product with provided id is used",
                 details);
         return ResponceEntityBuilder.build(apiExceptionModel);
@@ -74,7 +77,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+        logger.error("Validation Error " + e);
 
         List<String> details = new ArrayList<>();
         details = e.getBindingResult()
@@ -93,8 +97,9 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
 
+        logger.error("Type Mismatch " + e);
         List<String> details = new ArrayList<>();
         details.add(e.getMessage());
 
@@ -111,7 +116,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                                                                            HttpHeaders headers,
                                                                            HttpStatus status,
                                                                            WebRequest request) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+        logger.error("Missing Parameters " + e);
 
         List<String> details = new ArrayList<>();
         details.add(e.getMessage());
@@ -129,7 +135,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                                                                    HttpHeaders headers,
                                                                    HttpStatus status,
                                                                    WebRequest request) {
-        logger.error(e.getMessage(), e);
+//        logger.error(e.getMessage(), e);
+        logger.error("Method Not Found " + e);
 
         List<String> details = new ArrayList<>();
         details.add(String.format("Could not find the %s method for URL %s", e.getHttpMethod(), e.getRequestURL()));
@@ -144,7 +151,9 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) {
-        logger.error(e.getLocalizedMessage(), e);
+//        logger.error(e.getLocalizedMessage(), e);
+
+        logger.error("Error occurred " + e);
 
         List<String> details = new ArrayList<>();
         details.add(e.getLocalizedMessage());
