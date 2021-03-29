@@ -2,7 +2,6 @@ package com.springboot.cassandraproject.controllers;
 
 import com.springboot.cassandraproject.domains.PackageBase;
 import com.springboot.cassandraproject.domains.PackageCustom;
-import com.springboot.cassandraproject.domains.Product;
 import com.springboot.cassandraproject.dto.PackageDto;
 import com.springboot.cassandraproject.services.PackageServiceImpl;
 import io.swagger.annotations.Api;

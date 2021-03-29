@@ -4,7 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final static Logger logger = LogManager.getLogger(ControllerExceptionHandler.class.getSimpleName());
+    private final static Logger logger = LogManager
+            .getLogger(ControllerExceptionHandler.class.getSimpleName());
 
    @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
@@ -74,7 +75,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
-        logger.error("Validation Error " + e);
+        logger.error("Validation Error {}", e);
 
         List<String> details = new ArrayList<>();
         details = e.getBindingResult()

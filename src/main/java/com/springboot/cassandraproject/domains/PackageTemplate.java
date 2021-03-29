@@ -36,7 +36,7 @@ public abstract class PackageTemplate implements Serializable, Comparable<Packag
     @Column("productIds")
     private Set<UUID> productIds = new HashSet<>();
 
-    public PackageTemplate() {
+    protected PackageTemplate() {
         id = UUID.randomUUID();
     }
 

@@ -61,7 +61,7 @@ public class PackageDto {
         this.createdTime = createdTime;
     }
 
-    public Collection<Product> getProductList(){
+    public Collection<Product> getProductList() {
         return productList;
     }
 
