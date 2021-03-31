@@ -260,7 +260,7 @@ class ProductControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(productToPatch)))
 
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
