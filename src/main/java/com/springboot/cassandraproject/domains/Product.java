@@ -1,6 +1,6 @@
 package com.springboot.cassandraproject.domains;
 
-import io.swagger.annotations.ApiModel;;
+import io.swagger.annotations.ApiModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -71,8 +71,8 @@ public class Product implements Serializable, Comparable<Product>{
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Product product = (Product) o;
-            return this.id.equals(product.id) &&
+        Product product = (Product) o;
+        return this.id.equals(product.id) &&
                     this.name.equals(product.name) &&
                     this.description.equals(product.description) &&
                     this.price.equals(product.price);

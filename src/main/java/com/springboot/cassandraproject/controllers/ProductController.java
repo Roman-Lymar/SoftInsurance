@@ -48,7 +48,7 @@ public class ProductController {
             return ResponseEntity.ok(productService.getAllProducts());
         }
         else {
-            logger.info("Request getAllProductsOrFilterByName with filter: " + searchStr);
+            logger.info("Request getAllProductsOrFilterByName with filter: {}", searchStr);
             return ResponseEntity.ok(productService.getProductsBySearchString(searchStr));
         }
     }
@@ -61,7 +61,7 @@ public class ProductController {
             @ApiParam(value = "ID value for the product you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
-            logger.info("Request Get product by id " + id);
+            logger.info("Request Get product by id {}", id);
             Optional<Product> product = productService.getProductById(id);
             return ResponseEntity.ok().body(product.get());
     }
@@ -73,7 +73,7 @@ public class ProductController {
             @ApiParam(value = "Finds cost of one or more products by ids. Use ',' as delimiter.", required = true)
             @RequestParam(name = REQUEST_PARAM_IDS) Set<UUID> ids) {
 
-            logger.info("Request Get product by id with filter COST for " + ids);
+            logger.info("Request Get product by id with filter COST for {}", ids);
             BigDecimal cost = productService.getProductsCostByIds(ids);
             return ResponseEntity.ok(cost);
     }
@@ -100,7 +100,7 @@ public class ProductController {
             @ApiParam(value = "Valid product body.", required = true) @Valid @RequestBody final Product newProduct,
             @ApiParam(value = "ID value for the product you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
-            logger.info("Request replaceProduct for id: " + id);
+            logger.info("Request replaceProduct for id: {}", id);
             return productService.getProductById(id)
                     .map(product -> {
                         product.setName(newProduct.getName());
@@ -122,22 +122,24 @@ public class ProductController {
             @ApiParam(value = "Product fields to update.", required = true) @RequestBody final Product productUpdate,
             @ApiParam(value = "ID value for the product you need to update.", required = true)@PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
-            logger.info("Request partialUpdateProduct for id: " + id);
+            logger.info("Request partialUpdateProduct for id: {}", id);
             Optional<Product> productOptional = productService.getProductById(id);
 
             Product product = productOptional.get();
             if (productUpdate.getName() != null) {
                 product.setName(productUpdate.getName());
-                logger.info("Updated Product Name" +" to: "+ product.getName()+ " for id: " + id);
+                logger.info("Updated Product Name to: {} for id: {}", product.getName(), id);
 
             }
             if (productUpdate.getDescription() != null) {
                 product.setDescription(productUpdate.getDescription());
-                logger.info("Updated Product Description" +" to: "+ product.getDescription()+ " for id: " + id);
+                logger.info("Updated Product Description to: "+ product.getDescription()+ " for id: " + id);
+                logger.info("Updated Product Description to: {} for id: {}", product.getDescription(), id);
+
             }
             if (productUpdate.getPrice() != BigDecimal.ZERO) {
                 product.setPrice(productUpdate.getPrice());
-                logger.info("Updated Product Price" +" to: "+ product.getPrice()+ " for id: " + id);
+                logger.info("Updated Product Price to: {} for id: {}", product.getPrice(), id);
             }
 
             return ResponseEntity.ok(productService.saveProduct(product));
@@ -150,7 +152,7 @@ public class ProductController {
             @ApiParam(value = "ID value for the product you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
-            logger.info("Request deleteProductById for id: " + id);
+            logger.info("Request deleteProductById for id: {}", id);
             productService.deleteProduct(id);
             return ResponseEntity.status(HttpStatus.OK).build();
     }

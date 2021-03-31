@@ -13,14 +13,13 @@ import java.nio.file.Path;
 @EnableConfigurationProperties(DataStaxAstraProperties.class)
 public class CassandraProjectApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CassandraProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CassandraProjectApplication.class, args);
+    }
 
-	@Bean
-	public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
-		Path bundle = astraProperties.getSecureConnectBundle().toPath();
-		return builder -> builder.withCloudSecureConnectBundle(bundle);
-	}
-
+    @Bean
+    public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
+        Path bundle = astraProperties.getSecureConnectBundle().toPath();
+        return builder -> builder.withCloudSecureConnectBundle(bundle);
+    }
 }

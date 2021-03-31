@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-
 import java.math.BigDecimal;
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> fetchedProduct = Optional.ofNullable(productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
-        logger.info("Products successfully returned for id: "+ id);
+        logger.info("Products successfully returned for id: {}", id);
         return fetchedProduct;
     }
 
@@ -62,11 +62,11 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         if (foundProducts.isEmpty()) {
-            logger.warn("None results by filter: "+ searchStr + " NO_RESOURCE_FOUND_BY_NAME");
+            logger.warn("None results by filter: {} NO_RESOURCE_FOUND_BY_NAME", searchStr);
             throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_BY_NAME.getErrorMessage()
                     + searchStr);
         } else
-            logger.info("Products successfully returned with filter: " + searchStr);
+            logger.info("Products successfully returned with filter: {}", searchStr);
             return foundProducts;
     }
 
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public BigDecimal getProductsCostByIds(Set<UUID> ids) {
-        logger.info(" Method getProductsCostByIds called with ids: " + ids);
+        logger.info(" Method getProductsCostByIds called with ids: {}", ids);
         BigDecimal cost = BigDecimal.ZERO;
         if (CollectionUtils.isEmpty(ids)) {
             logger.warn("None selected products");
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = getProductById(id).get();
             cost = cost.add(product.getPrice());
         }
-        logger.info("Products successfully returned for " + ids);
+        logger.info("Products successfully returned for {}", ids);
         return cost;
     }
 
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
             productRepository.deleteById(id);
-            logger.info("Product " + id + " was successfully deleted");
+            logger.info("Product {} was successfully deleted", id);
         }
     }
 }

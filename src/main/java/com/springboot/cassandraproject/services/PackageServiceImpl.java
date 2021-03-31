@@ -14,9 +14,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Service
 public class PackageServiceImpl {
@@ -44,7 +44,7 @@ public class PackageServiceImpl {
             throw new EmptyPackageException(ErrorMessages.EMPTY_PACKAGE.getErrorMessage());
         }
         packageCustom.setPrice(productService.getProductsCostByIds(productIds));
-        logger.info("Package" + packageCustom.getName() + "created" );
+        logger.info("Package {} created", packageCustom.getName());
         return packageCustomRepository.insert(packageCustom);
     }
 
@@ -78,10 +78,11 @@ public class PackageServiceImpl {
         }
 
         if(resultList.isEmpty()){
-            logger.warn("None results by filter: "+ searchStr + " NO_RESOURCE_FOUND_BY_NAME");
+            logger.warn("None results by filter: {} NO_RESOURCE_FOUND_BY_NAME", searchStr);
             throw new ResourceNotFoundException(ErrorMessages.NO_RESOURCE_FOUND_BY_NAME.getErrorMessage() + searchStr);
-        }else
-        logger.info("Custom Packages successfully returned with filter: " + searchStr);
+        }else {
+            logger.info("Custom Packages successfully returned with filter: {}", searchStr);
+        }
         return resultList;
     }
 
@@ -91,7 +92,7 @@ public class PackageServiceImpl {
         Optional<PackageCustom> fetchedPack = Optional.ofNullable(packageCustomRepository.findById(id).
                 orElseThrow(()-> new ResourceNotFoundException(
                         ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
-        logger.info("Custom Package successfully returned for: "+ id );
+        logger.info("Custom Package successfully returned for: {}", id );
         return fetchedPack;
     }
 
@@ -100,7 +101,7 @@ public class PackageServiceImpl {
         Optional<PackageBase> fetchedPack = Optional.ofNullable(packageBaseRepository.findById(id).
                 orElseThrow(()-> new ResourceNotFoundException(
                         ErrorMessages.NO_RESOURCE_FOUND.getErrorMessage() + id)));
-        logger.info("Base package successfully returned for: "+ id );
+        logger.info("Base package successfully returned for {}", id);
         return fetchedPack;
     }
 
@@ -120,7 +121,7 @@ public class PackageServiceImpl {
         packageDto.setPrice(packageCustom.getPrice());
         packageDto.setCreatedTime(packageCustom.getCreatedTime());
         packageDto.setProductList(products);
-        logger.info("Package INFO successfully returned for: "+ id );
+        logger.info("Package INFO successfully returned for: {}", id );
         return packageDto;
     }
 
@@ -141,7 +142,7 @@ public class PackageServiceImpl {
         packageDto.setPrice(packageBase.getPrice());
         packageDto.setCreatedTime(packageBase.getCreatedTime());
         packageDto.setProductList(products);
-        logger.info("Base package INFO successfully returned for: "+ id );
+        logger.info("Base package INFO successfully returned for: {}", id );
         return packageDto;
     }
 
@@ -149,7 +150,7 @@ public class PackageServiceImpl {
         logger.info("Method deletePackage called");
         if(getPackageCustomById(id).isPresent()){
             packageCustomRepository.deleteById(id);
-            logger.info("Package " + id + " was successfully deleted");
+            logger.info("Package {} was successfully deleted", id);
         }
     }
 
