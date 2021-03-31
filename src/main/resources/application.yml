@@ -1,8 +1,8 @@
 spring.application.name: cassandra-project
 
 # Local run
-server.port: 8081
-management.server.port: 8082
+# server.port: 8081
+# management.server.port: 8082
 
 spring.data.cassandra:
   keyspace-name: simple_keyspace
