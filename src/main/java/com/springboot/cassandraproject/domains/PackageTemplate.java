@@ -1,5 +1,6 @@
 package com.springboot.cassandraproject.domains;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -31,6 +32,7 @@ public abstract class PackageTemplate implements Serializable, Comparable<Packag
     private BigDecimal price = BigDecimal.ZERO;
 
     @Column("createdTime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime createdTime = LocalDateTime.now();
 
     @Column("productIds")

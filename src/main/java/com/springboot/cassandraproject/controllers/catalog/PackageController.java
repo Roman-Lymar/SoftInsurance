@@ -1,12 +1,13 @@
-package com.springboot.cassandraproject.controllers;
+package com.springboot.cassandraproject.controllers.catalog;
 
 import com.springboot.cassandraproject.domains.PackageBase;
 import com.springboot.cassandraproject.domains.PackageCustom;
 import com.springboot.cassandraproject.dto.PackageDto;
 import com.springboot.cassandraproject.services.PackageServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v0/catalog/packages")
-@Api(tags = {"Operations available with insurance packages"})
+@RequestMapping("/catalog/packages")
+@Tag(name = "Packages")
 public class PackageController {
 
     private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
@@ -40,11 +41,11 @@ public class PackageController {
     private PackageServiceImpl packageService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Creates a new custom package.",
-            notes = "Creates a new custom package in the catalog.",
-            response = PackageCustom.class)
+    @Operation(summary = "Creates a new custom package.",
+            description = "Creates a new custom package in the catalog.", tags = {"Packages"},
+            security = @SecurityRequirement(name = "bearerToken"))
     public ResponseEntity<PackageCustom> createNewPackageCustom(
-            @ApiParam(value = "Valid package body.", required = true)
+            @Parameter(description = "Valid package body.", required = true)
             @Valid @RequestBody PackageCustom packageCustom) throws URISyntaxException {
 
         logger.info("Request createNewPackageCustom");
@@ -54,11 +55,10 @@ public class PackageController {
     }
 
     @PostMapping(value = MAPPING_PATH_BASE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Creates a new base package.",
-            notes = "Creates a new base package in the catalog.",
-            response = PackageBase.class)
+    @Operation(summary = "Creates a new base package.",
+            description = "Creates a new base package in the catalog.", tags = {"Packages"})
     public ResponseEntity<PackageBase> createNewPackageBase(
-            @ApiParam(value = "Valid package body.", required = true)
+            @Parameter(description = "Valid package body.", required = true)
             @Valid @RequestBody final PackageBase packageBase) throws URISyntaxException {
 
         logger.info("Request createNewPackageBase");
@@ -68,11 +68,10 @@ public class PackageController {
     }
 
     @GetMapping(path = MAPPING_PATH_ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets a custom package by id.",
-            notes = "Provides an id to look specific custom package from the catalog.",
-            response = PackageCustom.class)
+    @Operation(summary = "Gets a custom package by id.",
+            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"})
     public ResponseEntity<PackageCustom> findPackageById(
-            @ApiParam(value = "ID value for the custom package you need to retriev.", required = true)
+            @Parameter(description = "ID value for the custom package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request findPackageById");
@@ -81,10 +80,10 @@ public class PackageController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets all the custom packages.",
-            notes = "View a list of available custom packages in the catalog.")
+    @Operation(summary = "Gets all the custom packages.",
+            description = "View a list of available custom packages in the catalog.", tags = {"Packages"})
     public ResponseEntity<Iterable<PackageCustom>> getAllPackagesCustomOrFilterBySearchString(
-            @ApiParam(value = "Filter uses substrig as a parametr and look for any matches with custom packages fields \"name\" and/or \"description\".")
+            @Parameter(description = "Filter uses substrig as a parametr and look for any matches with custom packages fields \"name\" and/or \"description\".")
             @RequestParam(name = REQUEST_PARAM_FILTER, required = false) final String searchStr) {
 
         logger.info("Request getAllPackagesOrFilterByNames");
@@ -97,8 +96,8 @@ public class PackageController {
     }
 
     @GetMapping(value = MAPPING_PATH_BASE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets all the base packages.",
-            notes = "View a list of available base packages in the catalog.")
+    @Operation(summary = "Gets all the base packages.",
+            description = "View a list of available base packages in the catalog.")
     public ResponseEntity<Iterable<PackageBase>> getAllPackagesBase() {
 
         logger.info("Request getAllPackagesBaseOrFilterByNames");
@@ -106,11 +105,10 @@ public class PackageController {
     }
 
     @GetMapping(path = MAPPING_PATH_BASE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets a base package by id.",
-            notes = "Provides an id to look specific base package from the catalog.",
-            response = PackageCustom.class)
+    @Operation(summary = "Gets a base package by id.",
+            description = "Provides an id to look specific base package from the catalog.", tags = {"Packages"})
     public ResponseEntity<PackageBase> findPackageBaseById(
-            @ApiParam(value = "ID value for the base package you need to retriev.", required = true)
+            @Parameter(description = "ID value for the base package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request findPackageBaseById");
@@ -119,11 +117,10 @@ public class PackageController {
     }
 
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets a full custom package info with products.",
-            notes = "Provides an id to look specific custom package from the catalog.",
-            response = PackageDto.class)
+    @Operation(summary = "Gets a full custom package info with products.",
+            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"})
     public ResponseEntity<PackageDto> getInfoPackageById(
-            @ApiParam(value = "ID value for the custom package you need to retriev.", required = true)
+            @Parameter(description = "ID value for the custom package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request getInfoPackageById");
@@ -132,11 +129,10 @@ public class PackageController {
     }
 
     @GetMapping(path = MAPPING_PATH_BASE_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Gets a full base package info with products.",
-            notes = "Provides an id to look specific base package from the catalog.",
-            response = PackageDto.class)
+    @Operation(summary = "Gets a full base package info with products.",
+            description = "Provides an id to look specific base package from the catalog.", tags = {"Packages"})
     public ResponseEntity<PackageDto> getInfoBasePackageById(
-            @ApiParam(value = "ID value for the base package you need to retriev.", required = true)
+            @Parameter(description = "ID value for the base package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request getInfoBasePackageById");
@@ -145,10 +141,10 @@ public class PackageController {
     }
 
     @DeleteMapping(path = MAPPING_PATH_ID)
-    @ApiOperation(value = "Deletes a package.",
-            notes = "Deletes an existing package in the catalog.")
+    @Operation(summary = "Deletes a package.",
+            description = "Deletes an existing package in the catalog.")
     public ResponseEntity<Void> deletePackageById(
-            @ApiParam(value = "ID value for the package you need to delete.", required = true)
+            @Parameter(description = "ID value for the package you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request deletePackageById");
