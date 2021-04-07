@@ -1,13 +1,18 @@
 package com.springboot.cassandraproject.controllers.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.cassandraproject.dto.Client;
-import com.springboot.cassandraproject.dto.ClientOnlyNameBody;
+import com.springboot.cassandraproject.dto.clientdto.Client;
+import com.springboot.cassandraproject.dto.clientdto.ClientAmountBalance;
+import com.springboot.cassandraproject.dto.clientdto.ClientBalance;
+import com.springboot.cassandraproject.dto.clientdto.ClientOnlyNameBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -16,10 +21,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 
 @RestController
@@ -108,11 +118,11 @@ public class ExternalClientController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PatchMapping(path = MAPPING_PATH_TOPUP_BALANCE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = MAPPING_PATH_TOPUP_BALANCE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Updates a client balance.",
             description = "Updates a client balance.", tags = {"Clients"})
-    public ResponseEntity<Void> updateClientBalance(
-            @Parameter(description = "Balance to update.", required = true) @RequestBody final BigDecimal amount,
+    public ResponseEntity<ClientBalance> updateClientBalance(
+            @Parameter(description = "Balance to update.", required = true) @Valid @RequestBody final ClientAmountBalance amount,
             @Parameter(description = "ID value for the client you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         UriComponentsBuilder renewURIBuilder= UriComponentsBuilder.fromHttpUrl(CLIENT_ID_URL);
@@ -120,23 +130,38 @@ public class ExternalClientController {
         URI uri=uriComponent.toUri();
 
         Client client = restTemplate.getForObject(uri, Client.class);
-        BigDecimal newBalance = client.getBalance().add(amount);
+        BigDecimal newBalance = client.getBalance().add(amount.getAmount());
         client.setBalance(newBalance);
+        ClientBalance clientBalance = new ClientBalance();
+        clientBalance.setBalance(newBalance);
 
         UriComponentsBuilder renewURIBuilderBalance= UriComponentsBuilder.fromHttpUrl(CLIENT_TOPUP_BALANCE_URL);
         UriComponents uriComponentBalance=renewURIBuilderBalance.buildAndExpand(id);
         URI uriBalance=uriComponentBalance.toUri();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Client> entity = new HttpEntity<>(client, headers);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<Client> entity = new HttpEntity<>(client);
 
+//        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//        requestFactory.setConnectTimeout(1000);
+//        requestFactory.setReadTimeout(1000);
+
+        CloseableHttpClient httpClient
+                = HttpClients.custom()
+                //.setDefaultHeaders(Collections.singletonList(MediaType.APPLICATION_JSON))
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .build();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(1000);
-        requestFactory.setReadTimeout(1000);
+        requestFactory.setHttpClient(httpClient);
 
         RestTemplate rest = new RestTemplate(requestFactory);
-        ResponseEntity<Void> responseEntity = rest.exchange(uriBalance, HttpMethod.PATCH, entity, Void.class);
+        ResponseEntity<ClientBalance> responseEntity = rest.exchange(uriBalance, HttpMethod.PATCH, entity, ClientBalance.class);
+        //Client responseEntity = rest.patchForObject(uriBalance, client, Client.class);
+
         return responseEntity;
     }
+
+
 }
