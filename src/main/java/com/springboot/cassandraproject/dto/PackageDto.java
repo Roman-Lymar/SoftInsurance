@@ -1,5 +1,6 @@
 package com.springboot.cassandraproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.springboot.cassandraproject.domains.Product;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class PackageDto {
 
     private BigDecimal price;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime createdTime;
 
     private Collection<Product> productList;

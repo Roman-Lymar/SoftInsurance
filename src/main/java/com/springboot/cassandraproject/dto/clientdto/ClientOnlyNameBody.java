@@ -1,4 +1,4 @@
-package com.springboot.cassandraproject.dto;
+package com.springboot.cassandraproject.dto.clientdto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -8,6 +8,13 @@ import java.io.Serializable;
 public class ClientOnlyNameBody implements Serializable {
 
     private String name;
+
+    public ClientOnlyNameBody() {
+    }
+
+    public ClientOnlyNameBody(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
