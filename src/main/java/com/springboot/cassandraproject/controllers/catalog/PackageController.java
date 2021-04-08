@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,10 +41,11 @@ public class PackageController {
     @Autowired
     private PackageServiceImpl packageService;
 
+    @PreAuthorize("hasRole('admin') or hasRole('client')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Creates a new custom package.",
             description = "Creates a new custom package in the catalog.", tags = {"Packages"},
-            security = @SecurityRequirement(name = "bearerToken"))
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<PackageCustom> createNewPackageCustom(
             @Parameter(description = "Valid package body.", required = true)
             @Valid @RequestBody PackageCustom packageCustom) throws URISyntaxException {
@@ -53,10 +55,11 @@ public class PackageController {
         return ResponseEntity.created(new URI(URI_PACKAGES + createdPack
                 .getId())).body(packageCustom);
     }
-
+    @PreAuthorize("hasRole('admin')")
     @PostMapping(value = MAPPING_PATH_BASE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Creates a new base package.",
-            description = "Creates a new base package in the catalog.", tags = {"Packages"})
+            description = "Creates a new base package in the catalog.", tags = {"Packages"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<PackageBase> createNewPackageBase(
             @Parameter(description = "Valid package body.", required = true)
             @Valid @RequestBody final PackageBase packageBase) throws URISyntaxException {
@@ -67,9 +70,11 @@ public class PackageController {
                 .getId())).body(packageBase);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('client')")
     @GetMapping(path = MAPPING_PATH_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Gets a custom package by id.",
-            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"})
+            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<PackageCustom> findPackageById(
             @Parameter(description = "ID value for the custom package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -79,9 +84,11 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage.get());
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Gets all the custom packages.",
-            description = "View a list of available custom packages in the catalog.", tags = {"Packages"})
+            description = "View a list of available custom packages in the catalog.", tags = {"Packages"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<Iterable<PackageCustom>> getAllPackagesCustomOrFilterBySearchString(
             @Parameter(description = "Filter uses substrig as a parametr and look for any matches with custom packages fields \"name\" and/or \"description\".")
             @RequestParam(name = REQUEST_PARAM_FILTER, required = false) final String searchStr) {
@@ -116,9 +123,11 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage.get());
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('client')")
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Gets a full custom package info with products.",
-            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"})
+            description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<PackageDto> getInfoPackageById(
             @Parameter(description = "ID value for the custom package you need to retriev.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -140,9 +149,11 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping(path = MAPPING_PATH_ID)
     @Operation(summary = "Deletes a package.",
-            description = "Deletes an existing package in the catalog.")
+            description = "Deletes an existing package in the catalog.",
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<Void> deletePackageById(
             @Parameter(description = "ID value for the package you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {

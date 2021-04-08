@@ -37,10 +37,12 @@ import java.util.*;
 @Tag(name = "Clients", description = "Operations available with clients")
 public class ExternalClientController {
 
-    private static final String GET_ALL_CLIENTS_URL = "https://insurance-client-api.herokuapp.com/api/v1/clients";
-    private static final String CLIENT_ID_URL = "https://insurance-client-api.herokuapp.com/api/v1/clients/{id}";
-    private static final String CLIENT_FULL_INFO_URL = "https://insurance-client-api.herokuapp.com/api/v1/clients/{id}/info";
-    private static final String CLIENT_TOPUP_BALANCE_URL = "https://insurance-client-api.herokuapp.com/api/v1/clients/{id}/topup-balance";
+    private static final String GET_ALL_CLIENTS_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients";
+    //private static final String CLIENT_ID_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}";
+    private static final String CLIENT_ID_URL = "https://si-client.herokuapp.com/api/v2/clients/{id}";
+    private static final String CLIENT_FULL_INFO_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}/info";
+    //private static final String CLIENT_TOPUP_BALANCE_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}/topup-balance";
+    private static final String CLIENT_TOPUP_BALANCE_URL = "https://si-client.herokuapp.com/api/v2/clients/{id}/topup-balance";
     private static final String REQUEST_PARAM_FILTER = "name";
     private static final String MAPPING_PATH_ID = "/{id}";
     private static final String MAPPING_PATH_INFO = "/{id}/info";
@@ -53,7 +55,7 @@ public class ExternalClientController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="Gets all clients or filter by name.",
             description="View a list of clients.", tags = {"Clients"},
-            security = @SecurityRequirement(name = "bearerToken"))
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<Client[]> getAllClientsOrFilterByName(
             @Parameter(description = "Filter uses substrig as a parametr and look for any matches with client field \"name\".")
             @RequestParam(name = REQUEST_PARAM_FILTER, required = false) final String clientName) {
@@ -71,7 +73,8 @@ public class ExternalClientController {
 
     @DeleteMapping(path=MAPPING_PATH_ID)
     @Operation(summary = "Deletes a client.",
-            description = "Deletes an existing client.", tags = {"Clients"})
+            description = "Deletes an existing client.", tags = {"Clients"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<Void> deleteClientById(
             @Parameter(description = "ID value for the client you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -82,7 +85,8 @@ public class ExternalClientController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Creates a new client.",
-            description = "Creates a new client.", tags = {"Clients"})
+            description = "Creates a new client.", tags = {"Clients"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<Client> createNewClient(
             @Parameter(description = "Valid client with only name body.", required = true)
             @Valid @RequestBody final ClientOnlyNameBody client) throws URISyntaxException {
@@ -105,7 +109,8 @@ public class ExternalClientController {
 
     @GetMapping(path=MAPPING_PATH_INFO)
     @Operation(summary = "Gets all info about client.",
-            description = "All info about Client", tags = {"Clients"})
+            description = "All info about Client", tags = {"Clients"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<JsonNode> getClientFullInfoById(
             @Parameter(description = "ID value for the client you need to find.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -114,13 +119,19 @@ public class ExternalClientController {
         UriComponents uriComponent=renewURIBuilder.buildAndExpand(id);
         URI uri=uriComponent.toUri();
 
-        JsonNode result = restTemplate.exchange(uri, HttpMethod.GET, null, JsonNode.class).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2FhYjBmNy0zYmQzLTQ0MTctOGE5Zi1hMjg0M2Y0MjI5MTciLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjE3ODcwMjk4LCJleHAiOjE2MTc4NzM4OTh9.segLReCfFj9Q-fVil4C6az0s1QaWsu5qtnOcbCW1ayI");
+        HttpEntity<Client> entity = new HttpEntity<>(headers);
+
+        JsonNode result = restTemplate.exchange(uri, HttpMethod.GET, entity, JsonNode.class).getBody();
         return ResponseEntity.ok().body(result);
     }
 
     @PatchMapping(path = MAPPING_PATH_TOPUP_BALANCE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Updates a client balance.",
-            description = "Updates a client balance.", tags = {"Clients"})
+            description = "Updates a client balance.", tags = {"Clients"},
+            security = @SecurityRequirement(name = "BearerToken"))
     public ResponseEntity<ClientBalance> updateClientBalance(
             @Parameter(description = "Balance to update.", required = true) @Valid @RequestBody final ClientAmountBalance amount,
             @Parameter(description = "ID value for the client you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -129,11 +140,16 @@ public class ExternalClientController {
         UriComponents uriComponent=renewURIBuilder.buildAndExpand(id);
         URI uri=uriComponent.toUri();
 
-        Client client = restTemplate.getForObject(uri, Client.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxYzg1NGJmOS1lZGRlLTQ3ZmMtYTNmMy1jYTZlNWU4NTA3NzAiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjE3ODcxOTA5LCJleHAiOjE2MTc4NzU1MDl9.SjB3_sLvDwrCNU51IqKr9B-ku8gPsMKpY_qHG9qxVQs");
+        HttpEntity<Client> entity = new HttpEntity<>(headers);
+
+        Client client = restTemplate.exchange(uri, HttpMethod.GET, entity, Client.class).getBody();
         BigDecimal newBalance = client.getBalance().add(amount.getAmount());
         client.setBalance(newBalance);
-        ClientBalance clientBalance = new ClientBalance();
-        clientBalance.setBalance(newBalance);
+        ClientAmountBalance clientAmountBalance = new ClientAmountBalance();
+        clientAmountBalance.setAmount(newBalance);
 
         UriComponentsBuilder renewURIBuilderBalance= UriComponentsBuilder.fromHttpUrl(CLIENT_TOPUP_BALANCE_URL);
         UriComponents uriComponentBalance=renewURIBuilderBalance.buildAndExpand(id);
@@ -141,12 +157,13 @@ public class ExternalClientController {
 
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<Client> entity = new HttpEntity<>(client);
+//        headers.setBearerAuth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2FhYjBmNy0zYmQzLTQ0MTctOGE5Zi1hMjg0M2Y0MjI5MTciLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjE3ODcwMjk4LCJleHAiOjE2MTc4NzM4OTh9.segLReCfFj9Q-fVil4C6az0s1QaWsu5qtnOcbCW1ayI");
+//        HttpEntity<Client> entity = new HttpEntity<>(client);
 
 //        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 //        requestFactory.setConnectTimeout(1000);
 //        requestFactory.setReadTimeout(1000);
+        HttpEntity<ClientAmountBalance> entity2 = new HttpEntity<>(clientAmountBalance, headers);
 
         CloseableHttpClient httpClient
                 = HttpClients.custom()
@@ -157,7 +174,7 @@ public class ExternalClientController {
         requestFactory.setHttpClient(httpClient);
 
         RestTemplate rest = new RestTemplate(requestFactory);
-        ResponseEntity<ClientBalance> responseEntity = rest.exchange(uriBalance, HttpMethod.PATCH, entity, ClientBalance.class);
+        ResponseEntity<ClientBalance> responseEntity = rest.exchange(uriBalance, HttpMethod.PATCH, entity2, ClientBalance.class);
         //Client responseEntity = rest.patchForObject(uriBalance, client, Client.class);
 
         return responseEntity;

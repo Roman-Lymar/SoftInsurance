@@ -25,6 +25,66 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private final static Logger logger = LogManager
             .getLogger(ControllerExceptionHandler.class.getSimpleName());
 
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
+        //logger.error(" " + e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN,
+                "Access denied!",
+                details);
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    protected ResponseEntity<Object> handleTokenExpiredException(TokenExpiredException e) {
+        //logger.error(" " + e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                "Token is expired!",
+                details);
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
+    @ExceptionHandler(AuthorizationHeaderNotExistsException.class)
+    protected ResponseEntity<Object> handleAuthorizationHeaderNotExistsException(AuthorizationHeaderNotExistsException e) {
+        //logger.error(" " + e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                "Authorization header is empty!",
+                details);
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    protected ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException e) {
+        //logger.error(" " + e);
+
+        List<String> details = new ArrayList<>();
+        details.add(e.getMessage());
+
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                "Invalid token!",
+                details);
+        return ResponceEntityBuilder.build(apiExceptionModel);
+    }
+
    @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
        logger.error("Resource not found! " + e);

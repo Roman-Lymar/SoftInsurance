@@ -34,18 +34,24 @@ public class OpenApiConfig {
     }
 
     @Bean
+    public GroupedOpenApi publicAuthApi() {
+        return GroupedOpenApi.builder()
+                .group("AUTH")
+                .pathsToExclude("/catalog/**")
+                .pathsToExclude("/clients/**")
+                .pathsToMatch("/users/**").build();
+    }
+
+    @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components()
-                        .addSecuritySchemes("bearerToken", new SecurityScheme()
+                        .addSecuritySchemes("BearerToken", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .description("Enter JWT Bearer token only")
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                        )
-                        .addSecuritySchemes("basicAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("basic")
+                                .in(SecurityScheme.In.HEADER).name("Authorization")
                         ))
                 .info(new Info().title("SOFTINSURANCE REST API")
                         .description("This is a sample Softinsurance server " +
