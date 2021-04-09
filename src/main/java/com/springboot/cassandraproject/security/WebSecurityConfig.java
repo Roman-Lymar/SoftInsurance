@@ -63,19 +63,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //.addFilterAfter(new AuthTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/v1/api-docs/**",
-                        "/swagger-ui.html",
-                        "/swagger-resources/**").permitAll()
+//                .antMatchers(
+//                        "/swagger-ui/**",
+//                        "/v3/api-docs/**",
+//                        "/v1/api-docs/**",
+//                        "/swagger-ui.html",
+//                        "/swagger-resources/**").permitAll()
                 .antMatchers(HttpMethod.POST,"api/v1/catalog/products").hasRole("admin");
 //                .permitAll()
 //                .antMatchers("").hasRole("client")
 //                .antMatchers("").hasRole("admin")
                 //.anyRequest().authenticated()
                 //.and()
-        //.httpBasic();
+                //.httpBasic();
+
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.headers().frameOptions().disable();
     }
