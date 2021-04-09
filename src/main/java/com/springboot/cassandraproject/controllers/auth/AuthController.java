@@ -1,7 +1,5 @@
 package com.springboot.cassandraproject.controllers.auth;
 
-import com.springboot.cassandraproject.domains.Product;
-import com.springboot.cassandraproject.dto.clientdto.Client;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
