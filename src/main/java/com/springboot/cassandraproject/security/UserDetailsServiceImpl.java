@@ -22,6 +22,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         String role = jwtUtils.getUserRoleFromJwtToken(jwtToken);
         UsersDto user = new UsersDto(UUID.fromString(id), role);
 
+        System.out.println("User info: " + user);
+        
         return UserDetailsImpl.build(user);
     }
 }
