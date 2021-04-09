@@ -44,7 +44,7 @@ public class PackageController {
     @Operation(summary = "Creates a new custom package.",
             description = "Creates a new custom package in the catalog.", tags = {"Packages"},
             security = @SecurityRequirement(name = "BearerToken"))
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageCustom> createNewPackageCustom(
             @Parameter(description = "Valid package body.", required = true)
