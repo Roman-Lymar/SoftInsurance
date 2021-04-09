@@ -16,20 +16,16 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.*;
 
 @RestController
@@ -38,11 +34,9 @@ import java.util.*;
 public class ExternalClientController {
 
     private static final String GET_ALL_CLIENTS_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients";
-    //private static final String CLIENT_ID_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}";
-    private static final String CLIENT_ID_URL = "https://si-client.herokuapp.com/api/v2/clients/{id}";
+    private static final String CLIENT_ID_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}";
     private static final String CLIENT_FULL_INFO_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}/info";
-    //private static final String CLIENT_TOPUP_BALANCE_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}/topup-balance";
-    private static final String CLIENT_TOPUP_BALANCE_URL = "https://si-client.herokuapp.com/api/v2/clients/{id}/topup-balance";
+    private static final String CLIENT_TOPUP_BALANCE_URL = "https://insurance-client-api.herokuapp.com/api/v2/clients/{id}/topup-balance";
     private static final String REQUEST_PARAM_FILTER = "name";
     private static final String MAPPING_PATH_ID = "/{id}";
     private static final String MAPPING_PATH_INFO = "/{id}/info";
@@ -52,10 +46,11 @@ public class ExternalClientController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="Gets all clients or filter by name.",
             description="View a list of clients.", tags = {"Clients"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Client[]> getAllClientsOrFilterByName(
             @Parameter(description = "Filter uses substrig as a parametr and look for any matches with client field \"name\".")
             @RequestParam(name = REQUEST_PARAM_FILTER, required = false) final String clientName) {
@@ -71,10 +66,11 @@ public class ExternalClientController {
         }
     }
 
-    @DeleteMapping(path=MAPPING_PATH_ID)
     @Operation(summary = "Deletes a client.",
             description = "Deletes an existing client.", tags = {"Clients"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAuthority('admin')")
+    @DeleteMapping(path=MAPPING_PATH_ID)
     public ResponseEntity<Void> deleteClientById(
             @Parameter(description = "ID value for the client you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -83,10 +79,11 @@ public class ExternalClientController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Creates a new client.",
             description = "Creates a new client.", tags = {"Clients"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Client> createNewClient(
             @Parameter(description = "Valid client with only name body.", required = true)
             @Valid @RequestBody final ClientOnlyNameBody client) throws URISyntaxException {
@@ -107,10 +104,11 @@ public class ExternalClientController {
         return ResponseEntity.ok(restTemplate.getForObject(uri, Client.class));
     }
 
-    @GetMapping(path=MAPPING_PATH_INFO)
     @Operation(summary = "Gets all info about client.",
             description = "All info about Client", tags = {"Clients"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
+    @GetMapping(path=MAPPING_PATH_INFO)
     public ResponseEntity<JsonNode> getClientFullInfoById(
             @Parameter(description = "ID value for the client you need to find.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -132,6 +130,8 @@ public class ExternalClientController {
     @Operation(summary = "Updates a client balance.",
             description = "Updates a client balance.", tags = {"Clients"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
+    @GetMapping(path=MAPPING_PATH_INFO)
     public ResponseEntity<ClientBalance> updateClientBalance(
             @Parameter(description = "Balance to update.", required = true) @Valid @RequestBody final ClientAmountBalance amount,
             @Parameter(description = "ID value for the client you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -155,19 +155,10 @@ public class ExternalClientController {
         UriComponents uriComponentBalance=renewURIBuilderBalance.buildAndExpand(id);
         URI uriBalance=uriComponentBalance.toUri();
 
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBearerAuth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2FhYjBmNy0zYmQzLTQ0MTctOGE5Zi1hMjg0M2Y0MjI5MTciLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjE3ODcwMjk4LCJleHAiOjE2MTc4NzM4OTh9.segLReCfFj9Q-fVil4C6az0s1QaWsu5qtnOcbCW1ayI");
-//        HttpEntity<Client> entity = new HttpEntity<>(client);
-
-//        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-//        requestFactory.setConnectTimeout(1000);
-//        requestFactory.setReadTimeout(1000);
         HttpEntity<ClientAmountBalance> entity2 = new HttpEntity<>(clientAmountBalance, headers);
 
         CloseableHttpClient httpClient
                 = HttpClients.custom()
-                //.setDefaultHeaders(Collections.singletonList(MediaType.APPLICATION_JSON))
                 .setSSLHostnameVerifier(new NoopHostnameVerifier())
                 .build();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
@@ -175,10 +166,7 @@ public class ExternalClientController {
 
         RestTemplate rest = new RestTemplate(requestFactory);
         ResponseEntity<ClientBalance> responseEntity = rest.exchange(uriBalance, HttpMethod.PATCH, entity2, ClientBalance.class);
-        //Client responseEntity = rest.patchForObject(uriBalance, client, Client.class);
 
         return responseEntity;
     }
-
-
 }
