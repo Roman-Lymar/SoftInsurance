@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UsersDto user = new UsersDto(UUID.fromString(id), role);
 
         System.out.println("User info: " + user);
-        
+
         return UserDetailsImpl.build(user);
     }
 }

@@ -21,7 +21,7 @@ public class JwtUtils {
     private String secret;
 
     public boolean validateJwtToken(String jwtToken) {
-
+        System.out.println("JWT Validate from Noda:" + jwtToken);
         try {
             Jws<Claims> jwsClaims = Jwts.parserBuilder()
                     .setSigningKey(secret)
