@@ -5,16 +5,13 @@ server:
     context-path: /api/v1
 
 # Local run
-server.port: 8081
+#server.port: 8081
 # management.server.port: 8082
 
 
 security:
   jwt:
-    header: Authorization
-    prefix: Bearer
     secret: LkwyCFBzDA8cWUnc9FqSKnESRqXq9mEeJ2QtETNRbqjgnv8wT6BpxSAYQzqs87ZKYJCDzr5qUKHz2sbK9QLQt4KxZXJPERxEzrvC6DJ8bDJGn6nq5RbkVwyzSRywXWp5
-    #expire-length: 3600000 #1h
 
 spring.data.cassandra:
   keyspace-name: simple_keyspace

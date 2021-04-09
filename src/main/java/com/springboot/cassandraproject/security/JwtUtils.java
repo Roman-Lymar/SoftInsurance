@@ -1,26 +1,30 @@
 package com.springboot.cassandraproject.security;
 
+import com.springboot.cassandraproject.exceptions.AuthorizationHeaderNotExistsException;
 import com.springboot.cassandraproject.exceptions.InvalidTokenException;
 import com.springboot.cassandraproject.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtUtils {
 
-    @Autowired
-    private JwtConfig jwtConfig;
+    @Value("${security.jwt.secret}")
+    private String secret;
 
     public boolean validateJwtToken(String jwtToken) {
+
         try {
-            //        Key hmacKey  = new SecretKeySpec(Base64.getDecoder().decode(jwtConfig.getSecret()),
-//                    SignatureAlgorithm.HS256.getJcaName());
             Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                    .setSigningKey(jwtConfig.getSecret())
+                    .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(jwtToken);
             return true;
@@ -39,13 +43,24 @@ public class JwtUtils {
         return false;
     }
 
+    public String parseJwt(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (StringUtils.isBlank(header)) {
+            throw new AuthorizationHeaderNotExistsException();
+        }
+
+        if (Pattern.matches("^Bearer .*", header)) {
+            header = header.replaceAll("^Bearer( )*", "");
+            return header;
+        }
+
+        return null;
+    }
+
     public String getUserIdFromJwtToken(String jwtToken) {
 
-//        Key hmacKey  = new SecretKeySpec(Base64.getDecoder().decode(jwtConfig.getSecret()),
-//                        SignatureAlgorithm.HS256.getJcaName());
-
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(jwtConfig.getSecret())
+                .setSigningKey(secret)
                 .build()
                 .parseClaimsJws(jwtToken);
 
@@ -68,11 +83,8 @@ public class JwtUtils {
 
     public String getUserRoleFromJwtToken(String jwtToken) {
 
-//        Key hmacKey  = new SecretKeySpec(Base64.getDecoder().decode(jwtConfig.getSecret()),
-//                        SignatureAlgorithm.HS256.getJcaName());
-
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(jwtConfig.getSecret())
+                .setSigningKey(secret)
                 .build()
                 .parseClaimsJws(jwtToken);
 

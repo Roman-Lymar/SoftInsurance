@@ -1,6 +1,6 @@
 package com.springboot.cassandraproject.security;
 
-import com.springboot.cassandraproject.dto.roleuserdto.UsersDto;
+import com.springboot.cassandraproject.dto.userdto.UsersDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,12 +16,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private JwtUtils jwtUtils;
 
     @Override
-    public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
-        String id = jwtUtils.getUserIdFromJwtToken(token);
-        String role = jwtUtils.getUserRoleFromJwtToken(token);
+    public UserDetails loadUserByUsername(String jwtToken) throws UsernameNotFoundException {
 
+        String id = jwtUtils.getUserIdFromJwtToken(jwtToken);
+        String role = jwtUtils.getUserRoleFromJwtToken(jwtToken);
         UsersDto user = new UsersDto(UUID.fromString(id), role);
-        System.out.println(user.toString());
+
         return UserDetailsImpl.build(user);
     }
 }
