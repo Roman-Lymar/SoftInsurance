@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
                 .authorizeRequests()
-                .antMatchers("api/v1/catalog/**").hasAuthority("admin")
+                .antMatchers("api/v1/catalog/**").hasAnyAuthority("admin", "client")
                 .antMatchers("api/v1/clients/**").hasAnyAuthority("admin", "client")
                 .antMatchers("api/v1/users/**").hasAnyAuthority("admin", "client");
 
