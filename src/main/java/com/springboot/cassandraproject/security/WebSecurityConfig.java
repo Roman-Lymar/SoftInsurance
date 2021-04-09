@@ -47,13 +47,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
                 "/v1/api-docs/**",
-                "/swagger-ui.html");
+                "/swagger-ui.html",
+                "/swagger-resources/**",
+                "/configuration/**",
+                "/webjars/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //.httpBasic().disable()
+                .httpBasic().disable()
                 .cors().disable()
                 .csrf().disable()
                 .formLogin().disable()
@@ -61,21 +64,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
-                //.addFilterAfter(new AuthTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-//                .antMatchers(
-//                        "/swagger-ui/**",
-//                        "/v3/api-docs/**",
-//                        "/v1/api-docs/**",
-//                        "/swagger-ui.html",
-//                        "/swagger-resources/**").permitAll()
-                .antMatchers(HttpMethod.POST,"api/v1/catalog/products").hasRole("admin");
+                .antMatchers("api/v1/catalog/**").hasAuthority("admin");
 //                .permitAll()
-//                .antMatchers("").hasRole("client")
-//                .antMatchers("").hasRole("admin")
-                //.anyRequest().authenticated()
-                //.and()
-                //.httpBasic();
+
+                //.anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.headers().frameOptions().disable();

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.cassandraproject.domains.Product;
 import com.springboot.cassandraproject.exceptions.ErrorMessages;
 import com.springboot.cassandraproject.exceptions.ResourceNotFoundException;
-import com.springboot.cassandraproject.services.ProductServiceImpl;
+import com.springboot.cassandraproject.services.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -53,7 +53,7 @@ class ProductControllerTest {
     }
 
     @MockBean
-    private ProductServiceImpl service;
+    private ProductService service;
 
     @Autowired
     private MockMvc mockMvc;

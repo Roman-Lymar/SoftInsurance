@@ -1,6 +1,6 @@
 package com.springboot.cassandraproject.security;
 
-import com.springboot.cassandraproject.dto.roleuserdto.UsersDto;
+import com.springboot.cassandraproject.dto.userdto.UsersDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -22,9 +21,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(UsersDto user) {
-        List<GrantedAuthority> authorities = Arrays.asList(
-                new SimpleGrantedAuthority(user.getRole()));
-        System.out.println("UserDetailsImpl build" + authorities.get(0));
+        List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(user.getRole()));
+
         return new UserDetailsImpl(
                 user.getId(),
                 authorities);

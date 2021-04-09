@@ -1,6 +1,5 @@
 package com.springboot.cassandraproject.config;
 
-import com.springboot.cassandraproject.security.JwtConfig;
 import org.springframework.boot.autoconfigure.cassandra.CqlSessionBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,10 +21,5 @@ public class BeansConfig {
     public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
         Path bundle = astraProperties.getSecureConnectBundle().toPath();
         return builder -> builder.withCloudSecureConnectBundle(bundle);
-    }
-
-    @Bean
-    public JwtConfig getJwtConfig() {
-        return new JwtConfig();
     }
 }

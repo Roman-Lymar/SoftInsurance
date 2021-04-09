@@ -4,8 +4,6 @@ import com.springboot.cassandraproject.domains.Product;
 import com.springboot.cassandraproject.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +88,7 @@ public class ProductController {
 //            @ApiResponse(responseCode = "404", description = "The client doesn't exist"),
 //            @ApiResponse(responseCode = "500", description = "Expired or invalid JWT token")
 //    })
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> createNewProduct(
             @Parameter(description = "Valid product body.", required = true)
@@ -103,11 +100,11 @@ public class ProductController {
                     .getId())).body(product);
     }
 
-    @PreAuthorize("hasRole('admin')")
-    @PutMapping(path=MAPPING_PATH_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Updates a product.",
             description = "Fully updates an existing product in the catalog.", tags = {"Products"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAuthority('admin')")
+    @PutMapping(path=MAPPING_PATH_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> replaceProduct(
             @Parameter(description = "Valid product body.", required = true) @Valid @RequestBody final Product newProduct,
             @Parameter(description = "ID value for the product you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -126,11 +123,11 @@ public class ProductController {
                     });
     }
 
-    @PreAuthorize("hasRole('admin')")
-    @PatchMapping(path=MAPPING_PATH_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Updates a product.",
             description = "Partially updates an existing product in the catalog.", tags = {"Products"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAuthority('admin')")
+    @PatchMapping(path=MAPPING_PATH_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> partialUpdateProduct(
             @Parameter(description = "Product fields to update.", required = true) @RequestBody final Product productUpdate,
             @Parameter(description = "ID value for the product you need to update.", required = true) @PathVariable(PATH_VARIABLE_ID) final UUID id) {
@@ -156,11 +153,11 @@ public class ProductController {
             return ResponseEntity.ok(productService.saveProduct(product));
     }
 
-    @PreAuthorize("hasRole('admin')")
-    @DeleteMapping(path=MAPPING_PATH_ID)
     @Operation(summary = "Deletes a product.",
             description = "Deletes an existing product in the catalog.", tags = {"Products"},
             security = @SecurityRequirement(name = "BearerToken"))
+    @PreAuthorize("hasAuthority('admin')")
+    @DeleteMapping(path=MAPPING_PATH_ID)
     public ResponseEntity<Void> deleteProductById(
             @Parameter(description = "ID value for the product you need to delete.", required = true)
             @PathVariable(PATH_VARIABLE_ID) final UUID id) {
