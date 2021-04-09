@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CassandraProjectApplication {
 
     public static void main(String[] args) {
+        System.out.println("Hello Noda!");
         SpringApplication.run(CassandraProjectApplication.class, args);
+
     }
 }
