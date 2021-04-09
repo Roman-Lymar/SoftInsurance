@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/catalog/packages")
-@Tag(name = "Packages")
+@Tag(name = "Packages", description = "Operations available with packages")
 public class PackageController {
 
     private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
