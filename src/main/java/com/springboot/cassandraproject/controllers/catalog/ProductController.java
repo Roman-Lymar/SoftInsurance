@@ -82,8 +82,6 @@ public class ProductController {
             return ResponseEntity.ok(cost);
     }
 
-    //@PreAuthorize("hasRole('admin')")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Creates a new product.",
             description = "Creates a new product in the catalog.", tags = {"Products"},
             security = @SecurityRequirement(name = "BearerToken"))
@@ -93,6 +91,8 @@ public class ProductController {
 //            @ApiResponse(responseCode = "404", description = "The client doesn't exist"),
 //            @ApiResponse(responseCode = "500", description = "Expired or invalid JWT token")
 //    })
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> createNewProduct(
             @Parameter(description = "Valid product body.", required = true)
             @Valid @RequestBody final Product product) throws URISyntaxException {

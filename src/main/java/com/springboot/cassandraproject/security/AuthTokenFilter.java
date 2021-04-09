@@ -1,7 +1,10 @@
 package com.springboot.cassandraproject.security;
 
+import com.springboot.cassandraproject.controllers.catalog.ProductController;
 import com.springboot.cassandraproject.exceptions.AuthorizationHeaderNotExistsException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
+
     @Autowired
     private JwtConfig jwtConfig;
 
@@ -34,15 +39,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        logger.info("Inside AuthTokenFilter.doFilterInternal");
 
         try {
             String jwtToken = parseJwt(request);
+            logger.info(jwtToken.toString());
 
             if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
                 String id = jwtUtils.getUserIdFromJwtToken(jwtToken);
                 String role = jwtUtils.getUserRoleFromJwtToken(jwtToken);
 
+                System.out.println(id);
+                System.out.println(role);
+                //logger.info(id + role);
+
                 UserDetails userDetails = userDetailsService.loadUserByUsername(jwtToken);
+                System.out.println("UserDetails" + userDetails.toString());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -58,14 +70,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String header = request.getHeader(jwtConfig.getHeader());
-
+        String header = request.getHeader("Authorization");
+        logger.info("Inside parseJWT()");
         if (StringUtils.isBlank(header)) {
             throw new AuthorizationHeaderNotExistsException();
         }
 
-        if (Pattern.matches(jwtConfig.getPrefix(), header)) {
-            header = header.replaceAll(jwtConfig.getPrefix(), "");
+        if (Pattern.matches("^Bearer .*", header)) {
+            header = header.replaceAll("^Bearer( )*", "");
             return header;
         }
 

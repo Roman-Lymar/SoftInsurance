@@ -1,16 +1,18 @@
 package com.springboot.cassandraproject.dto.roleuserdto;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class UsersDto {
 
     private UUID id;
-    private Set<Role> roles = new HashSet<>();
+    private String role;
 
-    public UsersDto(UUID id) {
+    public UsersDto() {
+    }
+
+    public UsersDto(UUID id, String role) {
         this.id = id;
+        this.role = role;
     }
 
     public UUID getId() {
@@ -21,11 +23,19 @@ public class UsersDto {
         this.id = id;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "UsersDto{" +
+                "id=" + id +
+                ", role='" + role + '\'' +
+                '}';
     }
 }
