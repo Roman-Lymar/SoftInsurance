@@ -27,6 +27,7 @@ public class JwtUtils {
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(jwtToken);
+            System.out.println("JWT Validate from Noda:" + jwsClaims.getBody());
             return true;
         } catch (SignatureException e) {
             //logger.error("Invalid JWT signature: {}", e.getMessage());
