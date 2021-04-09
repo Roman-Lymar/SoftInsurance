@@ -11,7 +11,7 @@ server:
 
 security:
   jwt:
-    secret: LkwyCFBzDA8cWUnc9FqSKnESRqXq9mEeJ2QtETNRbqjgnv8wT6BpxSAYQzqs87ZKYJCDzr5qUKHz2sbK9QLQt4KxZXJPERxEzrvC6DJ8bDJGn6nq5RbkVwyzSRywXWp5
+    secret: secret
 
 spring.data.cassandra:
   keyspace-name: simple_keyspace
