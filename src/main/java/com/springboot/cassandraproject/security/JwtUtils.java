@@ -26,15 +26,12 @@ public class JwtUtils {
     private String secret;
 
     public boolean validateJwtToken(String jwtToken) {
-        System.out.println("JWT secret:" + secret);
-        System.out.println("JWT Validate from Noda11111111:" + jwtToken);
+
         try {
-            //SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
             Jws<Claims> jwsClaims = Jwts.parserBuilder()
                     .setSigningKey(getEncodedSecretKey())
                     .build()
                     .parseClaimsJws(jwtToken);
-            System.out.println("JWT Validate from Noda222222222222:" + jwsClaims.getBody());
             return true;
         } catch (SignatureException e) {
             //logger.error("Invalid JWT signature: {}", e.getMessage());

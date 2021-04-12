@@ -28,8 +28,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             String jwtToken = jwtUtils.parseJwt(request);
-            System.out.println("JWT Request from Noda:" + jwtToken);
-            System.out.println(jwtUtils.validateJwtToken(jwtToken));
+
             if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(jwtToken);
 
