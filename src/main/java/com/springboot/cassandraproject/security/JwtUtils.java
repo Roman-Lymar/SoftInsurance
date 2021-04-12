@@ -4,30 +4,34 @@ import com.springboot.cassandraproject.exceptions.AuthorizationHeaderNotExistsEx
 import com.springboot.cassandraproject.exceptions.InvalidTokenException;
 import com.springboot.cassandraproject.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 @Component
 public class JwtUtils {
 
-    @Value("${security.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
     public boolean validateJwtToken(String jwtToken) {
-        System.out.println("JWT Validate from Noda:" + jwtToken);
+
         try {
             Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                    .setSigningKey(secret)
+                    .setSigningKey(getEncodedSecretKey())
                     .build()
                     .parseClaimsJws(jwtToken);
-            System.out.println("JWT Validate from Noda:" + jwsClaims.getBody());
             return true;
         } catch (SignatureException e) {
             //logger.error("Invalid JWT signature: {}", e.getMessage());
@@ -61,7 +65,7 @@ public class JwtUtils {
     public String getUserIdFromJwtToken(String jwtToken) {
 
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(secret)
+                .setSigningKey(getEncodedSecretKey())
                 .build()
                 .parseClaimsJws(jwtToken);
 
@@ -85,7 +89,7 @@ public class JwtUtils {
     public String getUserRoleFromJwtToken(String jwtToken) {
 
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(secret)
+                .setSigningKey(getEncodedSecretKey())
                 .build()
                 .parseClaimsJws(jwtToken);
 
@@ -104,5 +108,13 @@ public class JwtUtils {
         }
 
         return (String) claims.get("role");
+    }
+
+    private String getSecretKey() {
+        return secret;
+    }
+
+    private SecretKey getEncodedSecretKey() {
+        return Keys.hmacShaKeyFor(getSecretKey().getBytes(StandardCharsets.UTF_8));
     }
 }
