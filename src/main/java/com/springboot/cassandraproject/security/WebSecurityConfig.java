@@ -8,14 +8,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
-
 
 @Configuration
 @EnableWebSecurity
@@ -42,18 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                "/swagger-ui/**",
-                "/v3/api-docs/**",
-                "/v1/api-docs/**",
-                "/swagger-ui.html",
-                "/swagger-resources/**",
-                "/configuration/**",
-                "/webjars/**");
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
@@ -65,11 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
                 .authorizeRequests()
-                .antMatchers("api/v1/catalog/**").hasAnyAuthority("admin", "client")
-                .antMatchers("api/v1/clients/**").hasAnyAuthority("admin", "client")
-                .antMatchers("api/v1/users/**").hasAnyAuthority("admin", "client");
-
+                .antMatchers(HttpMethod.GET, "api/v1/catalog/packages/base**").permitAll()
+                .antMatchers(HttpMethod.GET, "api/v1/catalog/products**").permitAll()
+                .antMatchers(HttpMethod.GET, "**").permitAll()
+                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        //http.headers().frameOptions().disable();
     }
 }

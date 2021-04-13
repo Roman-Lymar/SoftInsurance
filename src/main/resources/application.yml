@@ -32,19 +32,3 @@ spring.mvc:
   throw-exception-if-no-handler-found: true
 spring.resources:
   add-mappings: false
-
-springdoc:
-  packages-to-scan: com.springboot.cassandraproject
-  api-docs:
-    groups:
-      enabled: true
-    path: /api-docs
-    default-consumes-media-type: application/json
-    default-produces-media-type: application/json
-  swagger-ui:
-    path: /swagger-ui.html
-    display-request-duration: true
-    operationsSorter: method
-    tags-sorter: alpha
-    disable-swagger-default-url: true
-    display-query-params-without-oauth2: true
