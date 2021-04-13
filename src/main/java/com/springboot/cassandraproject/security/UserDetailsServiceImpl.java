@@ -1,6 +1,6 @@
 package com.springboot.cassandraproject.security;
 
-import com.springboot.cassandraproject.dto.userdto.UsersDto;
+import com.springboot.cassandraproject.dto.UsersDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

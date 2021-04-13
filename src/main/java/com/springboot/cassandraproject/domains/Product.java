@@ -1,6 +1,5 @@
 package com.springboot.cassandraproject.domains;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -13,7 +12,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Table("product")
-@Schema(description = "Details about the product.")
 public class Product implements Serializable, Comparable<Product>{
 
     @PrimaryKey

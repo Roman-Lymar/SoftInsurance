@@ -1,4 +1,4 @@
-package com.springboot.cassandraproject.dto.userdto;
+package com.springboot.cassandraproject.dto;
 
 import java.util.UUID;
 

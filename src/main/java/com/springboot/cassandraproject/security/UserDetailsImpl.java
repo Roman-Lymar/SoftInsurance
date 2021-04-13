@@ -1,6 +1,6 @@
 package com.springboot.cassandraproject.security;
 
-import com.springboot.cassandraproject.dto.userdto.UsersDto;
+import com.springboot.cassandraproject.dto.UsersDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
