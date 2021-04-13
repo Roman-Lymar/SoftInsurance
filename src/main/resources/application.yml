@@ -5,12 +5,12 @@ server:
     context-path: /api/v1
 
 # Local run
-#server.port: 8081
+# server.port: 8081
 # management.server.port: 8082
 
 
 jwt:
-  secret: yedcODwQysiXbSAQ6gA9oK5N59pJNZEP
+  secret: LkwyCFBzDA8cWUnc9FqSKnESRqXq9mEeJ2QtETNRbqjgnv8wT6BpxSAYQzqs87ZKYJCDzr5qUKHz2sbK9QLQt4KxZXJPERxEzrvC6DJ8bDJGn6nq5RbkVwyzSRywXWp5
 
 spring.data.cassandra:
   keyspace-name: simple_keyspace
