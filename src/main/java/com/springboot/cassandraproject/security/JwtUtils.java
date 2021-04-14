@@ -1,20 +1,25 @@
 package com.springboot.cassandraproject.security;
 
+import com.springboot.cassandraproject.controllers.ProductController;
 import com.springboot.cassandraproject.exceptions.AuthorizationHeaderNotExistsException;
 import com.springboot.cassandraproject.exceptions.InvalidTokenException;
 import com.springboot.cassandraproject.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -22,27 +27,30 @@ import java.util.regex.Pattern;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
+
+    private static String PUBLIC_KEY_PATH = "src/main/resources/rsa_public.key";
 
     public boolean validateJwtToken(String jwtToken) {
 
         try {
             Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                    .setSigningKey(getEncodedSecretKey())
+                    .setSigningKey(getPublicKey())
                     .build()
                     .parseClaimsJws(jwtToken);
             return true;
-        } catch (SignatureException e) {
-            //logger.error("Invalid JWT signature: {}", e.getMessage());
-        } catch (MalformedJwtException e) {
-            //logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            logger.info("Invalid JWT signature.");
+            logger.trace("Invalid JWT signature trace: {}", e);
         } catch (ExpiredJwtException e) {
-            //logger.error("JWT token is expired: {}", e.getMessage());
+            logger.info("Expired JWT token.");
+            logger.trace("Expired JWT token trace: {}", e);
         } catch (UnsupportedJwtException e) {
-            //logger.error("JWT token is unsupported: {}", e.getMessage());
+            logger.info("Unsupported JWT token.");
+            logger.trace("Unsupported JWT token trace: {}", e);
         } catch (IllegalArgumentException e) {
-            //logger.error("JWT claims string is empty: {}", e.getMessage());
+            logger.info("JWT token compact of handler are invalid.");
+            logger.trace("JWT token compact of handler are invalid trace: {}", e);
         }
 
         return false;
@@ -65,7 +73,7 @@ public class JwtUtils {
     public String getUserIdFromJwtToken(String jwtToken) {
 
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(getEncodedSecretKey())
+                .setSigningKey(getPublicKey())
                 .build()
                 .parseClaimsJws(jwtToken);
 
@@ -89,7 +97,7 @@ public class JwtUtils {
     public String getUserRoleFromJwtToken(String jwtToken) {
 
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(getEncodedSecretKey())
+                .setSigningKey(getPublicKey())
                 .build()
                 .parseClaimsJws(jwtToken);
 
@@ -110,11 +118,22 @@ public class JwtUtils {
         return (String) claims.get("role");
     }
 
-    private String getSecretKey() {
-        return secret;
-    }
+    private PublicKey getPublicKey() {
+        File publicKeyFile = new File(PUBLIC_KEY_PATH);
+        byte[] publicKeyBytes = new byte[0];
 
-    private SecretKey getEncodedSecretKey() {
-        return Keys.hmacShaKeyFor(getSecretKey().getBytes(StandardCharsets.UTF_8));
+        try {
+            publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+            return keyFactory.generatePublic(publicKeySpec);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
