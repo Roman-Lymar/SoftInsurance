@@ -9,6 +9,7 @@ import com.springboot.cassandraproject.exceptions.ErrorMessages;
 import com.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.springboot.cassandraproject.repositories.PackageBaseRepository;
 import com.springboot.cassandraproject.repositories.PackageCustomRepository;
+import com.springboot.cassandraproject.security.JwtUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,5 +159,14 @@ public class PackageService {
         logger.info("Method getAllBasePackages called");
         logger.info("All Base packages successfully returned");
         return packageBaseRepository.findAll();
+    }
+
+    @Autowired
+    private JwtUtils jwtProvider;
+
+    public Boolean compareId(String header, UUID id){
+        logger.info("Method compareId called");
+        String token = header.substring(7);
+        return jwtProvider.getUserIdFromJwtToken(token).equals(id.toString());
     }
 }
