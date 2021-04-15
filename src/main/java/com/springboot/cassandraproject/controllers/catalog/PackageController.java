@@ -128,7 +128,7 @@ public class PackageController {
     @Operation(summary = "Gets a full custom package info with products.",
             description = "Provides an id to look specific custom package from the catalog.", tags = {"Packages"},
             security = @SecurityRequirement(name = "BearerToken"))
-    @PreAuthorize("hasAnyAuthority('admin','client')")
+    //@PreAuthorize("hasAnyAuthority('admin','client')")
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageDto> getInfoPackageById(
             @Parameter(description = "ID value for the custom package you need to retriev.", required = true)
