@@ -97,21 +97,13 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage.get());
     }
 
-    @PreAuthorize("hasAuthority('client')")
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable(PATH_VARIABLE_ID) final UUID id,
-                                                         @RequestHeader("Authorization") String header) throws Exception {
+    public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
         logger.info("Request getInfoPackageById");
-        logger.info(header);
-
-        if(packageService.compareId(header, id)){
-            PackageDto getPackage = packageService.getInfoPackageById(id);
-            return ResponseEntity.ok().body(getPackage);
-        }
-        else{
-            throw new Exception("Don't have access");
-        }
+        PackageDto getPackage = packageService.getInfoPackageById(id);
+        return ResponseEntity.ok().body(getPackage);
     }
 
     @GetMapping(path = MAPPING_PATH_BASE_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
