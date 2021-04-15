@@ -25,21 +25,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private final static Logger logger = LogManager
             .getLogger(ControllerExceptionHandler.class.getSimpleName());
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
-//        //logger.error(" " + e);
-//
-//        List<String> details = new ArrayList<>();
-//        details.add(e.getMessage());
-//
-//        ApiExceptionModel apiExceptionModel = new ApiExceptionModel(
-//                LocalDateTime.now(),
-//                HttpStatus.FORBIDDEN,
-//                "Access denied!",
-//                details);
-//        return ResponceEntityBuilder.build(apiExceptionModel);
-//    }
-
     @ExceptionHandler(TokenExpiredException.class)
     protected ResponseEntity<Object> handleTokenExpiredException(TokenExpiredException e) {
 
