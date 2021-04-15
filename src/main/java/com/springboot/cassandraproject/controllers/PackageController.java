@@ -97,7 +97,7 @@ public class PackageController {
         return ResponseEntity.ok().body(getPackage.get());
     }
 
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAnyAuthority('admin', 'client')")
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable(PATH_VARIABLE_ID) final UUID id) {
 
