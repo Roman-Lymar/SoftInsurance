@@ -1,6 +1,5 @@
 package com.springboot.cassandraproject.security;
 
-import com.springboot.cassandraproject.controllers.ProductController;
 import com.springboot.cassandraproject.exceptions.AuthorizationHeaderNotExistsException;
 import com.springboot.cassandraproject.exceptions.InvalidTokenException;
 import com.springboot.cassandraproject.exceptions.TokenExpiredException;
@@ -17,19 +16,17 @@ import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 @Component
 public class JwtUtils {
 
-    private static final Logger logger = LogManager.getLogger(ProductController.class.getSimpleName());
+    private static final Logger logger = LogManager.getLogger(JwtUtils.class.getSimpleName());
 
-    private static String PUBLIC_KEY_PATH = "src/main/resources/rsa_public.key";
+    private static String PUBLIC_KEY_PATH = "src/main/resources/public_x509.der";
 
     public boolean validateJwtToken(String jwtToken) {
 
@@ -125,7 +122,7 @@ public class JwtUtils {
         try {
             publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
             return keyFactory.generatePublic(publicKeySpec);
         } catch (IOException e) {
             e.printStackTrace();
