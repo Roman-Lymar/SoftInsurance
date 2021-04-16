@@ -5,4 +5,5 @@
       "type": "java.lang.String",
       "description": "An absolute path to the Datastax Astra secure connect bundle to use."
     }
-  ] }
+  ]
+}
