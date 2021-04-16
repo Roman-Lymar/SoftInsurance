@@ -1,19 +1,29 @@
 package com.springboot.cassandraproject.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.cassandraproject.domains.PackageBase;
 import com.springboot.cassandraproject.domains.PackageCustom;
 import com.springboot.cassandraproject.domains.Product;
 import com.springboot.cassandraproject.dto.PackageDto;
 import com.springboot.cassandraproject.exceptions.EmptyPackageException;
 import com.springboot.cassandraproject.exceptions.ErrorMessages;
+import com.springboot.cassandraproject.exceptions.InvalidTokenException;
 import com.springboot.cassandraproject.exceptions.ResourceNotFoundException;
 import com.springboot.cassandraproject.repositories.PackageBaseRepository;
 import com.springboot.cassandraproject.repositories.PackageCustomRepository;
 import com.springboot.cassandraproject.security.JwtUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -32,6 +42,9 @@ public class PackageService {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private JwtUtils jwtProvider;
 
     public PackageCustom createPackageCustom(PackageCustom packageCustom) {
         logger.info("Method createPackageCustom called");
@@ -106,9 +119,25 @@ public class PackageService {
         return fetchedPack;
     }
 
-    public PackageDto getInfoPackageById(UUID id) {
+    public PackageDto getInfoPackageById(UUID id, Map<String, String> headers) throws JsonProcessingException {
         logger.info("Method getInfoPackageById called");
+        String authorization = headers.get("authorization");
+        String userRole = jwtProvider.getUserRoleFromJwtToken(authorization.replace("Bearer ", ""));
         PackageCustom packageCustom = getPackageCustomById(id).get();
+        if (!userRole.equals("admin")) {
+            ResponseEntity<String> clientInfo = getClientInfo(headers);
+            if(Objects.isNull(clientInfo.getBody())) {
+                throw new InvalidTokenException();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(clientInfo.getBody());
+            String packageId = root.path("package").asText();
+            String packageIdFromDb = packageCustom.getId().toString();
+            if (StringUtils.isEmpty(packageId) || !packageId.equals(packageIdFromDb)) {
+                throw new InvalidTokenException();
+            }
+        }
+
 
         List<Product> products = new ArrayList<>();
         for (UUID uuid : packageCustom.getProductIds()) {
@@ -125,6 +154,8 @@ public class PackageService {
         logger.info("Package INFO successfully returned for: {}", id );
         return packageDto;
     }
+
+
 
     public PackageDto getInfoBasePackageById(UUID id) {
         logger.info("Method getInfoBasePackageById called");
@@ -161,12 +192,21 @@ public class PackageService {
         return packageBaseRepository.findAll();
     }
 
-    @Autowired
-    private JwtUtils jwtProvider;
-
-    public Boolean compareId(String header, UUID id){
+    public Boolean compareUserId(String header, UUID id){
         logger.info("Method compareId called");
         String token = header.substring(7);
         return jwtProvider.getUserIdFromJwtToken(token).equals(id.toString());
+    }
+
+    private ResponseEntity<String> getClientInfo(Map<String, String> headers) {
+        String authorization = headers.get("authorization");
+        String id = jwtProvider.getUserIdFromJwtToken(authorization.replace("Bearer ", ""));
+        HttpHeaders headersForRequest = new HttpHeaders();
+        headersForRequest.set("authorization", authorization);
+        HttpEntity<Object> entity = new HttpEntity<>(headersForRequest);
+        String uri = "https://insurance-client-api.herokuapp.com/api/v2/clients/" + id;
+        RestTemplate clientInfoById = new RestTemplate();
+        return clientInfoById.exchange(uri, HttpMethod.GET, entity, String.class);
+
     }
 }
