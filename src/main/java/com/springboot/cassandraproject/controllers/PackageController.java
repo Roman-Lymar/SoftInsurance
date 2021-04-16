@@ -1,5 +1,6 @@
 package com.springboot.cassandraproject.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springboot.cassandraproject.domains.PackageBase;
 import com.springboot.cassandraproject.domains.PackageCustom;
 import com.springboot.cassandraproject.dto.PackageDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -81,6 +83,8 @@ public class PackageController {
         }
     }
 
+
+
     @GetMapping(value = MAPPING_PATH_BASE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<PackageBase>> getAllPackagesBase() {
 
@@ -99,10 +103,11 @@ public class PackageController {
 
     @PreAuthorize("hasAnyAuthority('admin', 'client')")
     @GetMapping(path = MAPPING_PATH_CUSTOM_ID_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable(PATH_VARIABLE_ID) final UUID id) {
+    public ResponseEntity<PackageDto> getInfoPackageById(@PathVariable(PATH_VARIABLE_ID) final UUID id,
+                                                         @RequestHeader Map<String, String> headers) throws JsonProcessingException {
 
         logger.info("Request getInfoPackageById");
-        PackageDto getPackage = packageService.getInfoPackageById(id);
+        PackageDto getPackage = packageService.getInfoPackageById(id, headers);
         return ResponseEntity.ok().body(getPackage);
     }
 
